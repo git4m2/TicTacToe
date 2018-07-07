@@ -40,11 +40,20 @@ learned that this was not ideal for mapping the mouse click
 events to the individual squares on the grid.
 
 #### Second Attempt
-Next, I created 9 individual path statements for each square on 
-the 3x3 grid. As each square was drawn with a line segment, the 
-centers were effectively empty (no style attributes). Apparently, 
-the onclick event would not fire unless each square had a style 
-setting of "fill:transparent" ("fill:none" did not work).
+Next, I created 9 individual &lt;path/&gt; statements for each 
+square on the 3x3 grid. As each square was drawn with a line 
+segment, the centers were effectively empty (no style attributes). 
+Apparently, the *onclick* event would not fire unless each square 
+had a style setting of "fill:transparent" ("fill:none" did not work).
+
+The &lt;svg/&gt; element was used to host a *viewbox* with style 
+information applied. Each &lt;path/&gt; *id* used a naming convention 
+of "square\_&lt;row&gt;\_&lt;column&gt;" for later code referencing. 
+For example, the bottom-right square would have an id equal to the 
+name "square" and the row (2) and the column (2). The resulting name 
+would be "square\_2\_2". Note that the rows and columns use a 
+zero-based index.
+
 
 ## Authors
 * ME

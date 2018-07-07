@@ -5,7 +5,14 @@
 ### [Unreleased]
 - [ ] Determine which player's turn it is (i.e. Red vs Blue).
 - [ ] Prevent duplicate "X" or "O" images on squares upon mouse click.
-- [ ] Modify README file to reflect changes in code.
+- [ ] Update README file to reflect changes in code.
+<br/><br/>
+
+### v1.3.1
+#### Date: 2018-07-07
+#### Modify README file
+* Added notes regarding ability to reference individual squares via code.
+- [x] Modify README file to reflect changes in code.
 <br/><br/>
 
 ### v1.3.0
