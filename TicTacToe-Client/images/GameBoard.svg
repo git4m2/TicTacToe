@@ -1,0 +1,117 @@
+﻿<svg id="svgGameBoard" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" 
+     viewBox="0 0 315 315"
+     style="stroke-width:5; stroke:black; fill:none;" >
+
+  <path id="border" 
+        d="m 10 10 l 300 0 0 300 -300 0 z"
+  />
+
+  <path id="vert1" 
+        d="m 110 10 l 0 300"
+  />
+
+  <path id="vert2" 
+        d="m 210 10 l 0 300"
+  />
+
+  <path id="horiz1" 
+        d="m 10 110 l 300 0"
+  />
+
+  <path id="horiz2" 
+        d="m 10 210 l 300 0"
+  />
+
+  <path id="X1" 
+        style="stroke:red;"
+        d="m 30 30 l 60 60 m 0 -60 l -60 60"
+  />
+
+  <path id="X2" 
+        style="stroke:none;"
+        d="m 130 30 l 60 60 m 0 -60 l -60 60"
+  />
+
+  <path id="X3" 
+        style="stroke:red;"
+        d="m 230 30 l 60 60 m 0 -60 l -60 60"
+  />
+
+  <path id="X4" 
+        style="stroke:red;"
+        d="m 30 130 l 60 60 m 0 -60 l -60 60"
+  />
+
+  <path id="X5" 
+        style="stroke:red;"
+        d="m 130 130 l 60 60 m 0 -60 l -60 60"
+  />
+
+  <path id="X6" 
+        style="stroke:red;"
+        d="m 230 130 l 60 60 m 0 -60 l -60 60"
+  />
+
+  <path id="X7" 
+        style="stroke:red;"
+        d="m 30 230 l 60 60 m 0 -60 l -60 60"
+  />
+
+  <path id="X8" 
+        style="stroke:red;"
+        d="m 130 230 l 60 60 m 0 -60 l -60 60"
+  />
+
+  <path id="X9" 
+        style="stroke:red;"
+        d="m 230 230 l 60 60 m 0 -60 l -60 60"
+  />
+
+  <circle id="O1"
+          style="stroke:none;" 
+          r ="40" cx ="60" cy ="60"
+  />
+
+  <circle id="O2"
+          style="stroke:blue;" 
+          r ="40" cx ="160" cy ="60"
+  />
+
+  <circle id="O3"
+          style="stroke:blue;" 
+          r ="40" cx ="260" cy ="60"
+  />
+
+  <circle id="O4"
+          style="stroke:blue;" 
+          r ="40" cx ="60" cy ="160"
+  />
+
+  <circle id="O5"
+          style="stroke:blue;"
+          r ="40" cx ="160" cy ="160"
+  />
+
+  <circle id="O6"
+          style="stroke:blue;"
+          r ="40" cx ="260" cy ="160"
+  />
+
+  <circle id="O7"
+          style="stroke:blue;"
+          r ="40" cx ="60" cy ="260"
+  />
+
+  <circle id="O8"
+          style="stroke:blue;"
+          r ="40" cx ="160" cy ="260"
+  />
+
+  <circle id="O9"
+          style="stroke:blue;"
+          r ="40" cx ="260" cy ="260"
+  />
+  
+  <!--
+  -->
+</svg>
