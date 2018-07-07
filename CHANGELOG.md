@@ -3,7 +3,16 @@
 ## Changelog
 
 ### [Unreleased]
-- [ ] Create "X" and "O" SVG images via JavaScript.
+- [ ] Determine which player's turn it is (i.e. Red vs Blue).
+- [ ] Prevent duplicate "X" or "O" images on squares upon mouse click.
+- [ ] Modify README file to reflect changes in code.
+<br/><br/>
+
+### v1.3.0
+#### Date: 2018-07-07
+#### Added "XO" images
+* Added JavaScript code (on mouse click) to generate "X" and "O" images.
+- [x] Create "X" and "O" SVG images via JavaScript (on mouse click).
 <br/><br/>
 
 ### v1.2.0
