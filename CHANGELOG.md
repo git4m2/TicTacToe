@@ -6,6 +6,12 @@
 - [ ] Create "X" and "O" SVG images via JavaScript.
 <br/><br/>
 
+### v1.2.0
+#### Date: 2018-07-06
+#### Added GitHub Pages
+* Added GitHub Pages and link to README.md file for testing directly from GitHub.
+<br/><br/>
+
 ### v1.0.0
 #### Date: 2018-07-06
 #### Baseline
