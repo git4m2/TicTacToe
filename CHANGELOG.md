@@ -2,10 +2,19 @@
 
 ## Changelog
 
-### [Unreleased]
-- [ ] Determine which player's turn it is (i.e. Red vs Blue).
-- [ ] Prevent duplicate "X" or "O" images on squares upon mouse click.
-- [ ] Update README file to reflect changes in code.
+### [TODO]
+- [ ] Create Event Log to maintain history of each move by each player.
+- [ ] Check for victory (3 objects in a line);
+- [ ] Update README file.
+<br/><br/>
+
+### v1.4.0
+#### Date: 2018-07-08
+#### Create State array
+* Changed heading "Unreleased" to "TODO".
+- [x] Determine which player's turn it is (i.e. "X" vs "O").
+- [x] Prevent duplicate "X" or "O" images on squares upon mouse click.
+- [x] Create array to hold current state of the GameBoard.
 <br/><br/>
 
 ### v1.3.1
