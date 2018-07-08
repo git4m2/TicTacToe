@@ -4,8 +4,17 @@
 
 ### [TODO]
 - [ ] Create Event Log to maintain history of each move by each player.
-- [ ] Check for victory (3 objects in a line);
-- [ ] Update README file.
+- [ ] Reset button to clear the GameBoard.
+- [ ] Draw the cross-out line image for a victory.
+- [ ] Update README and CHANGELOG files.
+<br/><br/>
+
+### v1.5.0
+#### Date: 2018-07-??
+#### Victory
+* Modified code...
+- [x] Check for victory (3 objects in a line).
+- [x] Update README and CHANGELOG files.
 <br/><br/>
 
 ### v1.4.0

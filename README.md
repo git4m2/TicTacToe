@@ -111,6 +111,25 @@ calculations for SVG *path* statements. The "cross" is generated at 60%
 of the *squareWidth* and maintained at 20% distance from the edges of 
 the square. 
 
+### Victory
+There are 8 ways to win in TicTacToe. Placing 3 of your objects 
+("circle" or "cross") in a line will result in a win. We will be 
+checking for the following possibilities: 
+
+* Top row
+* Middle row
+* Bottom row
+* Left column
+* Center column
+* Right column
+* "Backslash" Diagonal from top-left to bottom-right ("\")
+* "Forward Slash" Diagonal from top-right to bottom-left ("/")
+
+The *checkVictory* function utilizes nested loops to check the first 6 possible 
+combinations from the list above. There are 2 additional explicit checks for both 
+the "Backslash" and "Forward Slash" diagonal solutions.
+
+
 ## Authors
 * ME
 <br/><br/>

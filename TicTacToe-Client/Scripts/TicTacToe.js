@@ -6,31 +6,13 @@ var gameArray = new Array(3);
 var player = "circle";
 
 $(document).ready(function () {
-    $('#btnTest').on('click', test);
-
     generateGameArray(gameArray);
-    registerSquareClickEvents();
+    registerSquareClickEvents(gameArray);
+
+    $('#btnTest').on('click', function () {
+        test(gameArray);
+    });
 });
-
-function test() {
-    var arrayString = "";
-    for (var i = 0; i < gameArray.length; i++) {
-        for (var j = 0; j < gameArray[0].length; j++) {
-            if (j == 0) {
-                arrayString += gameArray[i][j];
-            }
-            else {
-                arrayString += "," + gameArray[i][j];
-            }
-        }
-
-        if (i < gameArray.length - 1) {
-            arrayString += "\n";
-        }
-    }
-
-    alert("Game array: \n" + arrayString);
-}
 
 function generateGameArray(cubicArray) {
     // Multidimensional array
@@ -39,12 +21,12 @@ function generateGameArray(cubicArray) {
     }
 }
 
-function registerSquareClickEvents() {
+function registerSquareClickEvents(cubicArray) {
     // GameBoard is a 3x3 matrix
     // Rows
-    for (var i = 0; i < 3; i++) {
+    for (var i = 0; i < cubicArray.length; i++) {
         // Columns
-        for (var j = 0; j < 3; j++) {
+        for (var j = 0; j < cubicArray[0].length; j++) {
             var refSquareName = "#" + "square" + "_" + i + "_" + j;
 
             // Register onclick event
@@ -53,6 +35,25 @@ function registerSquareClickEvents() {
             });
         }
     }
+}
+
+function test(cubicArray) {
+    var arrayString = "";
+    for (var i = 0; i < cubicArray.length; i++) {
+        for (var j = 0; j < cubicArray[0].length; j++) {
+            if (j == 0) {
+                arrayString += cubicArray[i][j];
+            } else {
+                arrayString += "," + cubicArray[i][j];
+            }
+        }
+
+        if (i < cubicArray.length - 1) {
+            arrayString += "\n";
+        }
+    }
+
+    alert("Game array: \n" + arrayString);
 }
 
 function squareClick(object) {
@@ -98,6 +99,9 @@ function squareClick(object) {
         } else {
             // Error...
         }
+
+        // Victory?
+        checkVictory(gameArray);
     }
 }
 
@@ -129,4 +133,62 @@ function addCross(row, col, squareSideLength) {
     objCross.setAttribute("d", "m " + startX + " " + startY + " l " + crossBeamDistance + " " + crossBeamDistance + " m 0 -" + crossBeamDistance + " l -" + crossBeamDistance + " " + crossBeamDistance);
 
     $('#svgGameBoard').append(objCross);
+}
+
+function checkVictory(cubicArray) {
+    var result = false;
+    var dataRow = "";
+    var dataColumn = "";
+    var dataBackslashDiagonal = "";
+    var dataForwardSlashDiagonal = "";
+
+    // Rows
+    for (var i = 0; i < cubicArray.length; i++) {
+        // Columns
+        for (var j = 0; j < cubicArray[0].length; j++) {
+            if (j == 0) {
+                dataRow += cubicArray[i][j];
+                dataColumn += cubicArray[j][i]; // swap array indexers
+            } else {
+                dataRow += "," + cubicArray[i][j];
+                dataColumn += "," + cubicArray[j][i]; // swap array indexers
+            }
+        }
+
+        if (dataRow == "circle,circle,circle" || dataRow == "cross,cross,cross") {
+            i = cubicArray.length; // exit outer loop
+            result = true;
+            alert("Victory!");
+            test(gameArray);
+        }
+
+        if (dataColumn == "circle,circle,circle" || dataColumn == "cross,cross,cross") {
+            i = cubicArray.length; // exit outer loop
+            result = true;
+            alert("Victory!");
+            test(gameArray);
+        }
+
+        dataRow = "";
+        dataColumn = "";
+    }
+
+    // Check for "backslash" diagonal results ("\")
+    dataBackslashDiagonal = cubicArray[0][0] + "," + cubicArray[1][1] + "," + cubicArray[2][2];
+    if (dataBackslashDiagonal == "circle,circle,circle" || dataBackslashDiagonal == "cross,cross,cross") {
+        result = true;
+        alert("Victory!");
+        test(gameArray);
+    }
+
+    // Check for "foreward slash" diagonal results ("/")
+    dataForwardSlashDiagonal = cubicArray[0][2] + "," + cubicArray[1][1] + "," + cubicArray[2][0];
+    if (dataForwardSlashDiagonal == "circle,circle,circle" || dataForwardSlashDiagonal == "cross,cross,cross") {
+        result = true;
+        alert("Victory!");
+        test(gameArray);
+    }
+
+    dataBackslashDiagonal = "";
+    dataForwardSlashDiagonal = "";
 }
