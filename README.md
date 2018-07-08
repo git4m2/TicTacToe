@@ -125,9 +125,16 @@ checking for the following possibilities:
 * "Backslash" Diagonal from top-left to bottom-right ("\")
 * "Forward Slash" Diagonal from top-right to bottom-left ("/")
 
-The *checkVictory* function utilizes nested loops to check the first 6 possible 
-combinations from the list above. There are 2 additional explicit checks for both 
-the "Backslash" and "Forward Slash" diagonal solutions.
+#### First Attempt
+The *checkVictory* function utilizes nested loops to check the first 6 
+possible combinations from the list above. There are 2 additional 
+explicit checks for both the "Backslash" and "Forward Slash" diagonal 
+solutions.
+
+#### Second Attempt
+Modified the *checkVictory* function to use 8 explicit checks from the 
+possible combinations list above. This refactoring removed the nested 
+loops and allowed for a simplification of the code.
 
 
 ## Authors

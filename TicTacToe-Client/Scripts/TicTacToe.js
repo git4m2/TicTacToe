@@ -137,58 +137,60 @@ function addCross(row, col, squareSideLength) {
 
 function checkVictory(cubicArray) {
     var result = false;
-    var dataRow = "";
-    var dataColumn = "";
-    var dataBackslashDiagonal = "";
-    var dataForwardSlashDiagonal = "";
+    var lineData = "";
 
-    // Rows
-    for (var i = 0; i < cubicArray.length; i++) {
-        // Columns
-        for (var j = 0; j < cubicArray[0].length; j++) {
-            if (j == 0) {
-                dataRow += cubicArray[i][j];
-                dataColumn += cubicArray[j][i]; // swap array indexers
-            } else {
-                dataRow += "," + cubicArray[i][j];
-                dataColumn += "," + cubicArray[j][i]; // swap array indexers
-            }
-        }
+    // Check for victory (3 objects in a line)
 
-        if (dataRow == "circle,circle,circle" || dataRow == "cross,cross,cross") {
-            i = cubicArray.length; // exit outer loop
-            result = true;
-            alert("Victory!");
-            test(gameArray);
-        }
-
-        if (dataColumn == "circle,circle,circle" || dataColumn == "cross,cross,cross") {
-            i = cubicArray.length; // exit outer loop
-            result = true;
-            alert("Victory!");
-            test(gameArray);
-        }
-
-        dataRow = "";
-        dataColumn = "";
-    }
-
-    // Check for "backslash" diagonal results ("\")
-    dataBackslashDiagonal = cubicArray[0][0] + "," + cubicArray[1][1] + "," + cubicArray[2][2];
-    if (dataBackslashDiagonal == "circle,circle,circle" || dataBackslashDiagonal == "cross,cross,cross") {
+    // Row 1
+    lineData = cubicArray[0][0] + "," + cubicArray[0][1] + "," + cubicArray[0][2];
+    if (lineData == "circle,circle,circle" || lineData == "cross,cross,cross") {
         result = true;
-        alert("Victory!");
-        test(gameArray);
     }
 
-    // Check for "foreward slash" diagonal results ("/")
-    dataForwardSlashDiagonal = cubicArray[0][2] + "," + cubicArray[1][1] + "," + cubicArray[2][0];
-    if (dataForwardSlashDiagonal == "circle,circle,circle" || dataForwardSlashDiagonal == "cross,cross,cross") {
+    // Row 2
+    lineData = cubicArray[1][0] + "," + cubicArray[1][1] + "," + cubicArray[1][2];
+    if (lineData == "circle,circle,circle" || lineData == "cross,cross,cross") {
         result = true;
-        alert("Victory!");
-        test(gameArray);
     }
 
-    dataBackslashDiagonal = "";
-    dataForwardSlashDiagonal = "";
+    // Row 3
+    lineData = cubicArray[2][0] + "," + cubicArray[2][1] + "," + cubicArray[2][2];
+    if (lineData == "circle,circle,circle" || lineData == "cross,cross,cross") {
+        result = true;
+    }
+
+    // Column 1
+    lineData = cubicArray[0][0] + "," + cubicArray[1][0] + "," + cubicArray[2][0];
+    if (lineData == "circle,circle,circle" || lineData == "cross,cross,cross") {
+        result = true;
+    }
+
+    // Column 2
+    lineData = cubicArray[0][1] + "," + cubicArray[1][1] + "," + cubicArray[2][1];
+    if (lineData == "circle,circle,circle" || lineData == "cross,cross,cross") {
+        result = true;
+    }
+
+    // Column 3
+    lineData = cubicArray[0][2] + "," + cubicArray[1][2] + "," + cubicArray[2][2];
+    if (lineData == "circle,circle,circle" || lineData == "cross,cross,cross") {
+        result = true;
+    }
+
+    // "Backslash" Diagonal ("\")
+    lineData = cubicArray[0][0] + "," + cubicArray[1][1] + "," + cubicArray[2][2];
+    if (lineData == "circle,circle,circle" || lineData == "cross,cross,cross") {
+        result = true;
+    }
+
+    // "Forward Slash" Diagonal ("/")
+    lineData = cubicArray[0][2] + "," + cubicArray[1][1] + "," + cubicArray[2][0];
+    if (lineData == "circle,circle,circle" || lineData == "cross,cross,cross") {
+        result = true;
+    }
+
+    if (result == true) {
+        alert("Victory!");
+        //test(gameArray);
+    }
 }

@@ -9,10 +9,17 @@
 - [ ] Update README and CHANGELOG files.
 <br/><br/>
 
+### v1.5.1
+#### Date: 2018-07-08
+#### Modified Victory
+* Simplified *checkVictory* function.
+- [x] Update README and CHANGELOG files.
+<br/><br/>
+
 ### v1.5.0
-#### Date: 2018-07-??
+#### Date: 2018-07-08
 #### Victory
-* Modified code...
+* Added *checkVictory* function.
 - [x] Check for victory (3 objects in a line).
 - [x] Update README and CHANGELOG files.
 <br/><br/>
