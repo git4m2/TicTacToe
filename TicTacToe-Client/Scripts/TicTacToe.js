@@ -57,18 +57,20 @@ function test(cubicArray) {
 }
 
 function squareClick(object) {
-    // Get style (for the clicked square)
-    var squareStyle = object.attributes["style"].value;
-    var styleArray = squareStyle.split(";");
+    //// Get style (for the clicked square)
+    //var squareStyle = object.attributes["style"].value;
+    //var styleArray = squareStyle.split(";");
 
-    // Get line width of the path (for the clicked square)
-    var lineWidth = "";
-    for (var i = 0; i < styleArray.length; i++) {
-        var attributeArray = styleArray[i].split(':');
-        if (attributeArray[0].trim() == "stroke-width") {
-            lineWidth = Number(attributeArray[1].trim());
-        }
-    }
+    //// Get line width of the path (for the clicked square)
+    //var lineWidth = "";
+    //for (var i = 0; i < styleArray.length; i++) {
+    //    var attributeArray = styleArray[i].split(':');
+    //    if (attributeArray[0].trim() == "stroke-width") {
+    //        lineWidth = Number(attributeArray[1].trim());
+    //    }
+    //}
+
+    var lineWidth = getSquareLineWidth(object);
 
     // Get width (for the clicked square)
     var squareWidth = object.scrollWidth - lineWidth;
@@ -105,34 +107,21 @@ function squareClick(object) {
     }
 }
 
-function addCircle(row, col, squareSideLength) {
-    // 
-    // Draw SVG circle
-    var objName = "circle" + "_" + row + "_" + col;
-    var centerX = col * squareSideLength + 0.5 * squareSideLength;
-    var centerY = row * squareSideLength + 0.5 * squareSideLength;
-    var objCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    objCircle.setAttribute("id", objName);
-    objCircle.setAttribute("style", "stroke:blue;fill:none;");
-    objCircle.setAttribute("cx", centerX);
-    objCircle.setAttribute("cy", centerY);
-    objCircle.setAttribute("r", 0.4 * squareSideLength);
+function getSquareLineWidth(gameBoardSquare) {
+    // Get style (for the clicked square)
+    var squareStyle = gameBoardSquare.attributes["style"].value;
+    var styleArray = squareStyle.split(";");
 
-    $('#svgGameBoard').append(objCircle);
-}
+    // Get line width of the path (for the referenced GameBoard square)
+    var squareLineWidth = 0;
+    for (var i = 0; i < styleArray.length; i++) {
+        var attributeArray = styleArray[i].split(':');
+        if (attributeArray[0].trim() == "stroke-width") {
+            squareLineWidth = Number(attributeArray[1].trim());
+        }
+    }
 
-function addCross(row, col, squareSideLength) {
-    // Draw SVG cross
-    var objName = "cross" + "_" + row + "_" + col;
-    var startX = col * squareSideLength + 0.2 * squareSideLength;
-    var startY = row * squareSideLength + 0.2 * squareSideLength;
-    var crossBeamDistance = 0.6 * squareSideLength;
-    var objCross = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    objCross.setAttribute("id", objName);
-    objCross.setAttribute("style", "stroke:red;fill:none;");
-    objCross.setAttribute("d", "m " + startX + " " + startY + " l " + crossBeamDistance + " " + crossBeamDistance + " m 0 -" + crossBeamDistance + " l -" + crossBeamDistance + " " + crossBeamDistance);
-
-    $('#svgGameBoard').append(objCross);
+    return squareLineWidth;
 }
 
 function checkVictory(cubicArray) {
@@ -193,4 +182,35 @@ function checkVictory(cubicArray) {
         alert("Victory!");
         //test(gameArray);
     }
+}
+
+// DRAWING SHAPES
+function addCircle(row, col, squareSideLength) {
+    // 
+    // Draw SVG circle
+    var objName = "circle" + "_" + row + "_" + col;
+    var centerX = col * squareSideLength + 0.5 * squareSideLength;
+    var centerY = row * squareSideLength + 0.5 * squareSideLength;
+    var objCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    objCircle.setAttribute("id", objName);
+    objCircle.setAttribute("style", "stroke:blue;fill:none;");
+    objCircle.setAttribute("cx", centerX);
+    objCircle.setAttribute("cy", centerY);
+    objCircle.setAttribute("r", 0.4 * squareSideLength);
+
+    $('#svgGameBoard').append(objCircle);
+}
+
+function addCross(row, col, squareSideLength) {
+    // Draw SVG cross
+    var objName = "cross" + "_" + row + "_" + col;
+    var startX = col * squareSideLength + 0.2 * squareSideLength;
+    var startY = row * squareSideLength + 0.2 * squareSideLength;
+    var crossBeamDistance = 0.6 * squareSideLength;
+    var objCross = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    objCross.setAttribute("id", objName);
+    objCross.setAttribute("style", "stroke:red;fill:none;");
+    objCross.setAttribute("d", "m " + startX + " " + startY + " l " + crossBeamDistance + " " + crossBeamDistance + " m 0 -" + crossBeamDistance + " l -" + crossBeamDistance + " " + crossBeamDistance);
+
+    $('#svgGameBoard').append(objCross);
 }

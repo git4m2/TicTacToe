@@ -5,8 +5,13 @@
 ### [TODO]
 - [ ] Create Event Log to maintain history of each move by each player.
 - [ ] Reset button to clear the GameBoard.
-- [ ] Draw the cross-out line image for a victory.
 - [ ] Update README and CHANGELOG files.
+<br/><br/>
+
+### v1.6.0
+#### Date: 2018-07-09
+#### Refactor square line width.
+* Create *getSquareLineWidth* function necessary for future *victoryCrossOut* function.
 <br/><br/>
 
 ### v1.5.1
