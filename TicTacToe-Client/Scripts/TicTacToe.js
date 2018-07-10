@@ -72,7 +72,7 @@ function squareClick(object) {
 
     var lineWidth = getSquareLineWidth(object);
 
-    // Get width (for the clicked square)
+    // Get square width (for the clicked square)
     var squareWidth = object.scrollWidth - lineWidth;
 
     // Get [row][column] info (for the clicked square)
@@ -186,7 +186,6 @@ function checkVictory(cubicArray) {
 
 // DRAWING SHAPES
 function addCircle(row, col, squareSideLength) {
-    // 
     // Draw SVG circle
     var objName = "circle" + "_" + row + "_" + col;
     var centerX = col * squareSideLength + 0.5 * squareSideLength;
@@ -204,13 +203,51 @@ function addCircle(row, col, squareSideLength) {
 function addCross(row, col, squareSideLength) {
     // Draw SVG cross
     var objName = "cross" + "_" + row + "_" + col;
-    var startX = col * squareSideLength + 0.2 * squareSideLength;
-    var startY = row * squareSideLength + 0.2 * squareSideLength;
-    var crossBeamDistance = 0.6 * squareSideLength;
     var objCross = document.createElementNS("http://www.w3.org/2000/svg", "path");
+
+    // Distance
+    var distanceX = 0.6 * squareSideLength;
+    var distanceY = 0.6 * squareSideLength;
+
+    // Backslash
+    var startBackslashX = col * squareSideLength + 0.2 * squareSideLength;
+    var startBackslashY = row * squareSideLength + 0.2 * squareSideLength;
+    var pathBackSlash = "m " + startBackslashX + " " + startBackslashY + " l " + distanceX + " " + distanceY;
+
+    // Return to origin path
+    var pathOriginReturn = "m -" + (startBackslashX + distanceX) + " -" + (startBackslashY + distanceY);
+
+    // Forward Slash
+    var startForwardSlashX = col * squareSideLength + 0.8 * squareSideLength;
+    var startForwardSlashY = row * squareSideLength + 0.2 * squareSideLength;
+    var pathForwardSlash = "m " + startForwardSlashX + " " + startForwardSlashY + " l -" + distanceX + " " + distanceY;
+
+    // Cross
+    var pathCross = pathBackSlash + " " + pathOriginReturn + " " + pathForwardSlash;
+
     objCross.setAttribute("id", objName);
     objCross.setAttribute("style", "stroke:red;fill:none;");
-    objCross.setAttribute("d", "m " + startX + " " + startY + " l " + crossBeamDistance + " " + crossBeamDistance + " m 0 -" + crossBeamDistance + " l -" + crossBeamDistance + " " + crossBeamDistance);
+    //objCross.setAttribute("d", pathBackSlash);
+    //objCross.setAttribute("d", pathForwardSlash);
+    objCross.setAttribute("d", pathCross);
 
     $('#svgGameBoard').append(objCross);
 }
+
+//function victoryCrossOut(row, col, squareSideLength, orientation) {
+//    switch (orientation) {
+//        case "row1":
+//            break;
+//        case "column1":
+//            break;
+//        case "backSlash":
+//            var startX = 0.15 * squareSideLength;
+//            var startY = 0.15 * squareSideLength;
+//            var crossoutBeamDistance = 2.8 * squareSideLength;
+//            objCross.setAttribute("d", "m " + startX + " " + startY + " l " + crossoutBeamDistance + " " + crossoutBeamDistance);
+//            break;
+//        case "forwardSlash":
+//            break;
+//        default:
+//    }
+//}

@@ -8,6 +8,13 @@
 - [ ] Update README and CHANGELOG files.
 <br/><br/>
 
+### v1.7.0
+#### Date: 2018-07-10
+#### Refactor cross path.
+* Modify *addCross* function with reuseable code for future *victoryCrossOut* function.
+* Added *pathBackSlash* and *pathForwardSlash* code.
+<br/><br/>
+
 ### v1.6.0
 #### Date: 2018-07-09
 #### Refactor square line width.
