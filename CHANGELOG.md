@@ -8,6 +8,14 @@
 - [ ] Update README and CHANGELOG files.
 <br/><br/>
 
+### v1.8.0
+#### Date: 2018-07-11
+#### Victory visualization.
+* Added *victoryLine* function for cross-out victory image.
+* Refactored "square line width", now available throughout the project.
+- [x] Draw the cross-out line image for a victory.
+<br/><br/>
+
 ### v1.7.0
 #### Date: 2018-07-10
 #### Refactor cross path.
