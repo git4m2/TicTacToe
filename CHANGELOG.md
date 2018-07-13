@@ -8,6 +8,12 @@
 - [ ] Update README and CHANGELOG files.
 <br/><br/>
 
+### v1.8.1
+#### Date: 2018-07-13
+#### Refactor Victory.
+* Refactored *victoryLine* function.
+<br/><br/>
+
 ### v1.8.0
 #### Date: 2018-07-11
 #### Victory visualization.

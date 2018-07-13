@@ -136,6 +136,12 @@ Modified the *checkVictory* function to use 8 explicit checks from the
 possible combinations list above. This refactoring removed the nested 
 loops and allowed for a simplification of the code.
 
+#### Drawing Victory Cross-out Lines
+I went through several attempts at creating cross-out lines to display 
+a win and finally settled on a rounded tip line. If "cross" was the 
+winner, the line was running through the same path as each of the 
+crosses. The final line was slightly skewed in order to show each 
+"cross" underneath.
 
 ## Authors
 * ME

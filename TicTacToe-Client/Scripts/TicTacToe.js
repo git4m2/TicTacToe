@@ -245,99 +245,116 @@ function victoryLine(squareSideLength, orientation) {
     var objName = "victoryLine";
     var offsetEdge = 0.1;
     var offsetAxis = 0.2;
-    var objVictory = document.createElementNS("http://www.w3.org/2000/svg", "path");
+
+    //var objVictory = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    var objVictory = document.createElementNS("http://www.w3.org/2000/svg", "line");
+
+    var distanceFromEdge = offsetEdge * squareSideLength;
+    var distanceOffAxis = offsetAxis * squareSideLength;
+
+    var gameBoardSideLength = 3 * squareSideLength;
+    var victoryLineLength = gameBoardSideLength - 2 * distanceFromEdge;
+
+    var distanceOffAxisFromCenter = 0.5 * squareSideLength - 1 * distanceOffAxis; // centered line tilted slightly off axis
+    var distanceOffAxisFromOrigin = 2 * distanceOffAxis; // twice the distance from origin of line tilted slightly off axis
 
     switch (orientation) {
         case "row1":
             // Starting Point
-            var startX = offsetEdge * squareSideLength;
-            var startY = (0.5 - offsetAxis) * squareSideLength;
+            var startX = distanceFromEdge;
+            var startY = 0 * squareSideLength + distanceOffAxisFromCenter;
 
             // Distance (across 3 squares)
-            var distanceX = 3 * squareSideLength - 2 * offsetEdge * squareSideLength;
-            var distanceY = (0.0 + 2 * offsetAxis) * squareSideLength;
+            var distanceX = victoryLineLength;
+            var distanceY = distanceOffAxisFromOrigin;
             break;
 
         case "row2":
             // Starting Point
-            var startX = offsetEdge * squareSideLength;
-            var startY = 1 * squareSideLength + (0.5 - offsetAxis) * squareSideLength;
+            var startX = distanceFromEdge;
+            var startY = 1 * squareSideLength + distanceOffAxisFromCenter;
 
             // Distance (across 3 squares)
-            var distanceX = 3 * squareSideLength - 2 * offsetEdge * squareSideLength;
-            var distanceY = (0.0 + 2 * offsetAxis) * squareSideLength;
+            var distanceX = victoryLineLength;
+            var distanceY = distanceOffAxisFromOrigin;
             break;
 
         case "row3":
             // Starting Point
-            var startX = offsetEdge * squareSideLength;
-            var startY = 2 * squareSideLength + (0.5 - offsetAxis) * squareSideLength;
+            var startX = distanceFromEdge;
+            var startY = 2 * squareSideLength + distanceOffAxisFromCenter;
 
             // Distance (across 3 squares)
-            var distanceX = 3 * squareSideLength - 2 * offsetEdge * squareSideLength;
-            var distanceY = (0.0 + 2 * offsetAxis) * squareSideLength;
+            var distanceX = victoryLineLength;
+            var distanceY = distanceOffAxisFromOrigin;
             break;
 
         case "column1":
             // Starting Point
-            var startX = 0 * squareSideLength + (0.5 - offsetAxis) * squareSideLength;
-            var startY = offsetEdge * squareSideLength;
+            var startX = 0 * squareSideLength + distanceOffAxisFromCenter;
+            var startY = distanceFromEdge;
 
             // Distance (across 3 squares)
-            var distanceX = 2 * offsetAxis * squareSideLength;
-            var distanceY = 3 * squareSideLength - 2 * offsetEdge * squareSideLength;
+            var distanceX = distanceOffAxisFromOrigin;
+            var distanceY = victoryLineLength;
             break;
 
         case "column2":
             // Starting Point
-            var startX = 1 * squareSideLength + (0.5 - offsetAxis) * squareSideLength;
-            var startY = offsetEdge * squareSideLength;
+            var startX = 1 * squareSideLength + distanceOffAxisFromCenter;
+            var startY = distanceFromEdge;
 
             // Distance (across 3 squares)
-            var distanceX = 2 * offsetAxis * squareSideLength;
-            var distanceY = 3 * squareSideLength - 2 * offsetEdge * squareSideLength;
+            var distanceX = distanceOffAxisFromOrigin;
+            var distanceY = victoryLineLength;
             break;
 
         case "column3":
             // Starting Point
-            var startX = 2 * squareSideLength + (0.5 - offsetAxis) * squareSideLength;
-            var startY = offsetEdge * squareSideLength;
+            var startX = 2 * squareSideLength + distanceOffAxisFromCenter;
+            var startY = distanceFromEdge;
 
             // Distance (across 3 squares)
-            var distanceX = 2 * offsetAxis * squareSideLength;
-            var distanceY = 3 * squareSideLength - 2 * offsetEdge * squareSideLength;
+            var distanceX = distanceOffAxisFromOrigin;
+            var distanceY = victoryLineLength;
             break;
 
         case "backSlash":
             // Starting Point
-            var startX = offsetEdge * squareSideLength;
-            var startY = 2 * offsetAxis * squareSideLength;
+            var startX = distanceFromEdge;
+            var startY = distanceOffAxisFromOrigin;
 
             // Distance (across 3 squares)
-            var distanceX = 3 * squareSideLength - 2 * offsetEdge * squareSideLength;
-            var distanceY = 3 * squareSideLength - 4 * offsetAxis * squareSideLength;
+            var distanceX = victoryLineLength;
+            var distanceY = gameBoardSideLength - 2 * distanceOffAxisFromOrigin;
             break;
 
         case "forwardSlash":
             // Starting Point
-            var startX = 3 * squareSideLength - offsetEdge * squareSideLength;
-            var startY = 2 * offsetAxis * squareSideLength;
+            var startX = gameBoardSideLength - distanceFromEdge;
+            var startY = distanceOffAxisFromOrigin;
 
             // Distance (across 3 squares)
-            var distanceX = -1 * (3 * squareSideLength - 2 * offsetEdge * squareSideLength);
-            var distanceY = 3 * squareSideLength - 4 * offsetAxis * squareSideLength;
+            var distanceX = -1 * victoryLineLength;
+            var distanceY = gameBoardSideLength - 2 * distanceOffAxisFromOrigin;
             break;
 
         default:
     }
 
     // Path
-    var strPath = "m " + startX + " " + startY + " l " + distanceX + " " + distanceY;
+    //var strPath = "m " + startX + " " + startY + " l " + distanceX + " " + distanceY;
 
     // Attributes
     objVictory.setAttribute("id", objName);
-    objVictory.setAttribute("style", "stroke-width:15;stroke:black;fill:none;opacity:1.0");
-    objVictory.setAttribute("d", strPath);
+    //objVictory.setAttribute("style", "stroke-width:15;stroke:black;fill:none;opacity:1.0");
+    //objVictory.setAttribute("d", strPath);
+
+    objVictory.setAttribute("style", "stroke-width:15;stroke:black;stroke-linecap:round;fill:none;opacity:1.0");
+    objVictory.setAttribute("x1", startX);
+    objVictory.setAttribute("y1", startY);
+    objVictory.setAttribute("x2", startX + distanceX);
+    objVictory.setAttribute("y2", startY + distanceY);
 
     // Draw object on SVG GameBoard
     $('#svgGameBoard').append(objVictory);
