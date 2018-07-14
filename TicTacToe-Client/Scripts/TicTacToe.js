@@ -12,13 +12,14 @@ var squareWidth = 0;
 var player = "circle";
 
 $(document).ready(function () {
+    generateGameArray(gameArray);
+
     // Retrieve first game board square
     var objGameBoardSquare = $('#square_0_0')[0]; // Native DOM element from jquery get()
 
     squareBorderThickness = getSquareLineThickness(objGameBoardSquare);
     squareWidth = objGameBoardSquare.scrollWidth - squareBorderThickness;
 
-    generateGameArray(gameArray);
     registerSquareClickEvents(gameArray, squareWidth);
 
     $('#btnTest').on('click', function () {
@@ -31,6 +32,23 @@ function generateGameArray(cubicArray) {
     for (var i = 0; i < cubicArray.length; i++) {
         gameArray[i] = new Array(cubicArray.length);
     }
+}
+
+function getSquareLineThickness(gameBoardSquare) {
+    // Get style (for the clicked square)
+    var squareStyle = gameBoardSquare.attributes["style"].value;
+    var styleArray = squareStyle.split(";");
+
+    // Get line thickness of the path (for the referenced GameBoard square)
+    var borderThickness = 0;
+    for (var i = 0; i < styleArray.length; i++) {
+        var attributeArray = styleArray[i].split(':');
+        if (attributeArray[0].trim() == "stroke-width") {
+            borderThickness = Number(attributeArray[1].trim());
+        }
+    }
+
+    return borderThickness;
 }
 
 function registerSquareClickEvents(cubicArray, registerSquareWidth) {
@@ -101,23 +119,6 @@ function clickSquare(object, clickSquareWidth) {
     }
 }
 
-function getSquareLineThickness(gameBoardSquare) {
-    // Get style (for the clicked square)
-    var squareStyle = gameBoardSquare.attributes["style"].value;
-    var styleArray = squareStyle.split(";");
-
-    // Get line thickness of the path (for the referenced GameBoard square)
-    var borderThickness = 0;
-    for (var i = 0; i < styleArray.length; i++) {
-        var attributeArray = styleArray[i].split(':');
-        if (attributeArray[0].trim() == "stroke-width") {
-            borderThickness = Number(attributeArray[1].trim());
-        }
-    }
-
-    return borderThickness;
-}
-
 function checkVictory(cubicArray, victorySquareWidth) {
     var result = false;
     var lineData = "";
@@ -127,56 +128,56 @@ function checkVictory(cubicArray, victorySquareWidth) {
     // Row 1
     lineData = cubicArray[0][0] + "," + cubicArray[0][1] + "," + cubicArray[0][2];
     if (lineData == "circle,circle,circle" || lineData == "cross,cross,cross") {
-        victoryLine(victorySquareWidth, "row1");
+        victoryStrikeThrough(victorySquareWidth, "row1");
         result = true;
     }
 
     // Row 2
     lineData = cubicArray[1][0] + "," + cubicArray[1][1] + "," + cubicArray[1][2];
     if (lineData == "circle,circle,circle" || lineData == "cross,cross,cross") {
-        victoryLine(victorySquareWidth, "row2");
+        victoryStrikeThrough(victorySquareWidth, "row2");
         result = true;
     }
 
     // Row 3
     lineData = cubicArray[2][0] + "," + cubicArray[2][1] + "," + cubicArray[2][2];
     if (lineData == "circle,circle,circle" || lineData == "cross,cross,cross") {
-        victoryLine(victorySquareWidth, "row3");
+        victoryStrikeThrough(victorySquareWidth, "row3");
         result = true;
     }
 
     // Column 1
     lineData = cubicArray[0][0] + "," + cubicArray[1][0] + "," + cubicArray[2][0];
     if (lineData == "circle,circle,circle" || lineData == "cross,cross,cross") {
-        victoryLine(victorySquareWidth, "column1");
+        victoryStrikeThrough(victorySquareWidth, "column1");
         result = true;
     }
 
     // Column 2
     lineData = cubicArray[0][1] + "," + cubicArray[1][1] + "," + cubicArray[2][1];
     if (lineData == "circle,circle,circle" || lineData == "cross,cross,cross") {
-        victoryLine(victorySquareWidth, "column2");
+        victoryStrikeThrough(victorySquareWidth, "column2");
         result = true;
     }
 
     // Column 3
     lineData = cubicArray[0][2] + "," + cubicArray[1][2] + "," + cubicArray[2][2];
     if (lineData == "circle,circle,circle" || lineData == "cross,cross,cross") {
-        victoryLine(victorySquareWidth, "column3");
+        victoryStrikeThrough(victorySquareWidth, "column3");
         result = true;
     }
 
     // "Backslash" Diagonal ("\")
     lineData = cubicArray[0][0] + "," + cubicArray[1][1] + "," + cubicArray[2][2];
     if (lineData == "circle,circle,circle" || lineData == "cross,cross,cross") {
-        victoryLine(victorySquareWidth, "backSlash");
+        victoryStrikeThrough(victorySquareWidth, "backSlash");
         result = true;
     }
 
     // "Forward Slash" Diagonal ("/")
     lineData = cubicArray[0][2] + "," + cubicArray[1][1] + "," + cubicArray[2][0];
     if (lineData == "circle,circle,circle" || lineData == "cross,cross,cross") {
-        victoryLine(victorySquareWidth, "forwardSlash");
+        victoryStrikeThrough(victorySquareWidth, "forwardSlash");
         result = true;
     }
 
@@ -184,6 +185,22 @@ function checkVictory(cubicArray, victorySquareWidth) {
         //alert("Victory!");
         //test(gameArray);
     }
+}
+
+function polarX(polarRadius, polarAngle) {
+    // polarAngle passed in degrees, theta calculated in radians
+    var theta = Math.PI / 180 * polarAngle;
+    var polarDistanceX = polarRadius * Math.cos(theta);
+
+    return polarDistanceX;
+}
+
+function polarY(polarRadius, polarAngle) {
+    // polarAngle passed in degrees, theta calculated in radians
+    var theta = Math.PI / 180 * polarAngle;
+    var polarDistanceY = polarRadius * Math.sin(theta);
+
+    return polarDistanceY;
 }
 
 // DRAWING SHAPES
@@ -241,120 +258,110 @@ function addCross(row, col, squareSideLength) {
     $('#svgGameBoard').append(objCross);
 }
 
-function victoryLine(squareSideLength, orientation) {
-    var objName = "victoryLine";
-    var offsetEdge = 0.1;
-    var offsetAxis = 0.2;
-
-    //var objVictory = document.createElementNS("http://www.w3.org/2000/svg", "path");
+function victoryStrikeThrough(squareSideLength, orientation) {
     var objVictory = document.createElementNS("http://www.w3.org/2000/svg", "line");
 
-    var distanceFromEdge = offsetEdge * squareSideLength;
-    var distanceOffAxis = offsetAxis * squareSideLength;
+    var objName = "victoryStrikeThrough";
 
-    var gameBoardSideLength = 3 * squareSideLength;
-    var victoryLineLength = gameBoardSideLength - 2 * distanceFromEdge;
+    // Offsets
+    var offsetSquareSideLength = 0.5 * squareSideLength
+    var offsetEdge = 0.1 * squareSideLength; // distance from edge
+    var offsetAngle = -5; // degrees offset from axis
 
-    var distanceOffAxisFromCenter = 0.5 * squareSideLength - 1 * distanceOffAxis; // centered line tilted slightly off axis
-    var distanceOffAxisFromOrigin = 2 * distanceOffAxis; // twice the distance from origin of line tilted slightly off axis
+    // Center Point
+    var centerX = offsetSquareSideLength;
+    var centerY = offsetSquareSideLength;
+
+    // Polar values
+    var radius = 1 * squareSideLength + offsetSquareSideLength - offsetEdge;
+    var angle = 0 + offsetAngle;
+
+    // Attributes
+    objVictory.setAttribute("id", objName);
+    objVictory.setAttribute("style", "stroke-width:15;stroke:black;stroke-linecap:round;fill:none;opacity:1.0");
 
     switch (orientation) {
         case "row1":
-            // Starting Point
-            var startX = distanceFromEdge;
-            var startY = 0 * squareSideLength + distanceOffAxisFromCenter;
-
-            // Distance (across 3 squares)
-            var distanceX = victoryLineLength;
-            var distanceY = distanceOffAxisFromOrigin;
+            // Center Point
+            centerX += 1 * squareSideLength;
+            centerY += 0 * squareSideLength;
             break;
 
         case "row2":
-            // Starting Point
-            var startX = distanceFromEdge;
-            var startY = 1 * squareSideLength + distanceOffAxisFromCenter;
-
-            // Distance (across 3 squares)
-            var distanceX = victoryLineLength;
-            var distanceY = distanceOffAxisFromOrigin;
+            // Center Point
+            centerX += 1 * squareSideLength;
+            centerY += 1 * squareSideLength;
             break;
 
         case "row3":
-            // Starting Point
-            var startX = distanceFromEdge;
-            var startY = 2 * squareSideLength + distanceOffAxisFromCenter;
-
-            // Distance (across 3 squares)
-            var distanceX = victoryLineLength;
-            var distanceY = distanceOffAxisFromOrigin;
+            // Center Point
+            centerX += 1 * squareSideLength;
+            centerY += 2 * squareSideLength;
             break;
 
         case "column1":
-            // Starting Point
-            var startX = 0 * squareSideLength + distanceOffAxisFromCenter;
-            var startY = distanceFromEdge;
+            // Center Point
+            centerX += 0 * squareSideLength;
+            centerY += 1 * squareSideLength;
 
-            // Distance (across 3 squares)
-            var distanceX = distanceOffAxisFromOrigin;
-            var distanceY = victoryLineLength;
+            // Polar values
+            angle += 90;
             break;
 
         case "column2":
-            // Starting Point
-            var startX = 1 * squareSideLength + distanceOffAxisFromCenter;
-            var startY = distanceFromEdge;
+            // Center Point
+            centerX += 1 * squareSideLength;
+            centerY += 1 * squareSideLength;
 
-            // Distance (across 3 squares)
-            var distanceX = distanceOffAxisFromOrigin;
-            var distanceY = victoryLineLength;
+            // Polar values
+            angle += 90;
             break;
 
         case "column3":
-            // Starting Point
-            var startX = 2 * squareSideLength + distanceOffAxisFromCenter;
-            var startY = distanceFromEdge;
+            // Center Point
+            centerX += 2 * squareSideLength;
+            centerY += 1 * squareSideLength;
 
-            // Distance (across 3 squares)
-            var distanceX = distanceOffAxisFromOrigin;
-            var distanceY = victoryLineLength;
+            // Polar values
+            angle += 90;
             break;
 
         case "backSlash":
-            // Starting Point
-            var startX = distanceFromEdge;
-            var startY = distanceOffAxisFromOrigin;
+            // Center Point
+            centerX += 1 * squareSideLength;
+            centerY += 1 * squareSideLength;
 
-            // Distance (across 3 squares)
-            var distanceX = victoryLineLength;
-            var distanceY = gameBoardSideLength - 2 * distanceOffAxisFromOrigin;
+            // Polar values
+            radius += 4 * offsetEdge;
+            angle += 45;
             break;
 
         case "forwardSlash":
-            // Starting Point
-            var startX = gameBoardSideLength - distanceFromEdge;
-            var startY = distanceOffAxisFromOrigin;
+            // Center Point
+            centerX += 1 * squareSideLength;
+            centerY += 1 * squareSideLength;
 
-            // Distance (across 3 squares)
-            var distanceX = -1 * victoryLineLength;
-            var distanceY = gameBoardSideLength - 2 * distanceOffAxisFromOrigin;
+            // Polar values
+            radius += 4 * offsetEdge;
+            angle += 135;
             break;
 
         default:
     }
 
-    // Path
-    //var strPath = "m " + startX + " " + startY + " l " + distanceX + " " + distanceY;
+    // Radial Distance
+    var distanceX = polarX(radius, angle);
+    var distanceY = polarY(radius, angle);
 
-    // Attributes
-    objVictory.setAttribute("id", objName);
-    //objVictory.setAttribute("style", "stroke-width:15;stroke:black;fill:none;opacity:1.0");
-    //objVictory.setAttribute("d", strPath);
+    // Starting Point
+    var startX = centerX - distanceX;
+    var startY = centerY - distanceY;
 
-    objVictory.setAttribute("style", "stroke-width:15;stroke:black;stroke-linecap:round;fill:none;opacity:1.0");
+    // Set drawing points
     objVictory.setAttribute("x1", startX);
     objVictory.setAttribute("y1", startY);
-    objVictory.setAttribute("x2", startX + distanceX);
-    objVictory.setAttribute("y2", startY + distanceY);
+    objVictory.setAttribute("x2", startX + 2 * distanceX);
+    objVictory.setAttribute("y2", startY + 2 * distanceY);
 
     // Draw object on SVG GameBoard
     $('#svgGameBoard').append(objVictory);

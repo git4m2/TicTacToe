@@ -8,6 +8,13 @@
 - [ ] Update README and CHANGELOG files.
 <br/><br/>
 
+### v1.9.0
+#### Date: 2018-07-13
+#### Use Polar Coordinates for Victory strikethrough.
+* Replace *victoryLine* with *victoryStrikeThrough* function which uses polar coordinates.
+- [x] Create XY functions to calculate polar coordinate points.
+<br/><br/>
+
 ### v1.8.1
 #### Date: 2018-07-13
 #### Refactor Victory.
