@@ -8,6 +8,12 @@
 - [ ] Update README and CHANGELOG files.
 <br/><br/>
 
+### v1.9.1
+#### Date: 2018-07-16
+#### Refactor cross object.
+* Refactored *addCross* function to use polar coordinates.
+<br/><br/>
+
 ### v1.9.0
 #### Date: 2018-07-13
 #### Use Polar Coordinates for Victory strikethrough.

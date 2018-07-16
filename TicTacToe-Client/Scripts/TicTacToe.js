@@ -229,29 +229,45 @@ function addCross(row, col, squareSideLength) {
     var objName = "cross" + "_" + row + "_" + col;
     var objCross = document.createElementNS("http://www.w3.org/2000/svg", "path");
 
-    // Distance
-    var distanceX = 0.6 * squareSideLength;
-    var distanceY = 0.6 * squareSideLength;
-
-    // Backslash
-    var startBackslashX = col * squareSideLength + 0.2 * squareSideLength;
-    var startBackslashY = row * squareSideLength + 0.2 * squareSideLength;
-    var pathBackSlash = "m " + startBackslashX + " " + startBackslashY + " l " + distanceX + " " + distanceY;
-
-    // Return to origin path
-    var pathOriginReturn = "m -" + (startBackslashX + distanceX) + " -" + (startBackslashY + distanceY);
-
-    // Forward Slash
-    var startForwardSlashX = col * squareSideLength + 0.8 * squareSideLength;
-    var startForwardSlashY = row * squareSideLength + 0.2 * squareSideLength;
-    var pathForwardSlash = "m " + startForwardSlashX + " " + startForwardSlashY + " l -" + distanceX + " " + distanceY;
-
-    // Cross
-    var strPath = pathBackSlash + " " + pathOriginReturn + " " + pathForwardSlash;
-
     // Attributes
     objCross.setAttribute("id", objName);
     objCross.setAttribute("style", "stroke:red;fill:none;");
+
+    // Center Point
+    var centerX = col * squareSideLength + 0.5 * squareSideLength;
+    var centerY = row * squareSideLength + 0.5 * squareSideLength;
+
+    // Polar values
+    var angle = "";
+    var radius = 0.4 * squareSideLength;
+
+    // Radial Path
+    var radialPath = "";
+
+    // Return to origin
+    var pathOriginReturn = "";
+
+    // Cross
+    var strPath = "m " + centerX + " " + centerY;
+
+    for (var i = 0; i < 4; i++) {
+        angle = i * 90 + 45;
+
+        // Radial Distance
+        var distanceX = polarX(radius, angle);
+        var distanceY = polarY(radius, angle);
+
+        // Radial Path
+        radialPath = "l " + distanceX + " " + distanceY;
+
+        // Return to origin
+        pathOriginReturn = "m " + (-1 * distanceX) + " " + (-1 * distanceY);
+
+        // Cross
+        strPath += " " + radialPath + " " + pathOriginReturn;
+    }
+
+    // Attributes
     objCross.setAttribute("d", strPath);
 
     // Draw object on SVG GameBoard
@@ -264,7 +280,7 @@ function victoryStrikeThrough(squareSideLength, orientation) {
     var objName = "victoryStrikeThrough";
 
     // Offsets
-    var offsetSquareSideLength = 0.5 * squareSideLength
+    var offsetSquareSideLength = 0.5 * squareSideLength;
     var offsetEdge = 0.1 * squareSideLength; // distance from edge
     var offsetAngle = -5; // degrees offset from axis
 
@@ -278,7 +294,7 @@ function victoryStrikeThrough(squareSideLength, orientation) {
 
     // Attributes
     objVictory.setAttribute("id", objName);
-    objVictory.setAttribute("style", "stroke-width:15;stroke:black;stroke-linecap:round;fill:none;opacity:1.0");
+    objVictory.setAttribute("style", "stroke-width:15;stroke:black;stroke-linecap:round;fill:none;opacity:1.0;");
 
     switch (orientation) {
         case "row1":
