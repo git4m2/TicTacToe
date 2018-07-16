@@ -209,16 +209,24 @@ function addCircle(row, col, squareSideLength) {
     var objName = "circle" + "_" + row + "_" + col;
     var objCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
 
-    // Center
-    var centerX = col * squareSideLength + 0.5 * squareSideLength;
-    var centerY = row * squareSideLength + 0.5 * squareSideLength;
-
     // Attributes
     objCircle.setAttribute("id", objName);
     objCircle.setAttribute("style", "stroke:blue;fill:none;");
+
+    // Offsets
+    var offsetSquareSideLength = 0.5 * squareSideLength;
+
+    // Center
+    var centerX = col * squareSideLength + offsetSquareSideLength;
+    var centerY = row * squareSideLength + offsetSquareSideLength;
+
+    // Polar values
+    var radius = 0.4 * squareSideLength;
+
+    // Attributes
     objCircle.setAttribute("cx", centerX);
     objCircle.setAttribute("cy", centerY);
-    objCircle.setAttribute("r", 0.4 * squareSideLength);
+    objCircle.setAttribute("r", radius);
 
     // Draw object on SVG GameBoard
     $('#svgGameBoard').append(objCircle);
@@ -233,9 +241,12 @@ function addCross(row, col, squareSideLength) {
     objCross.setAttribute("id", objName);
     objCross.setAttribute("style", "stroke:red;fill:none;");
 
-    // Center Point
-    var centerX = col * squareSideLength + 0.5 * squareSideLength;
-    var centerY = row * squareSideLength + 0.5 * squareSideLength;
+    // Offsets
+    var offsetSquareSideLength = 0.5 * squareSideLength;
+
+    // Center
+    var centerX = col * squareSideLength + offsetSquareSideLength;
+    var centerY = row * squareSideLength + offsetSquareSideLength;
 
     // Polar values
     var angle = "";
@@ -250,6 +261,7 @@ function addCross(row, col, squareSideLength) {
     // Cross
     var strPath = "m " + centerX + " " + centerY;
 
+    // Generate paths for 4 radial lines
     for (var i = 0; i < 4; i++) {
         angle = i * 90 + 45;
 
@@ -275,26 +287,32 @@ function addCross(row, col, squareSideLength) {
 }
 
 function victoryStrikeThrough(squareSideLength, orientation) {
-    var objVictory = document.createElementNS("http://www.w3.org/2000/svg", "line");
-
+    // Draw SVG Victory Strikethrough
     var objName = "victoryStrikeThrough";
+    var objVictory = document.createElementNS("http://www.w3.org/2000/svg", "path");
+
+    // Attributes
+    objVictory.setAttribute("id", objName);
+    objVictory.setAttribute("style", "stroke-width:15;stroke:black;stroke-linecap:round;fill:none;opacity:1.0;");
 
     // Offsets
     var offsetSquareSideLength = 0.5 * squareSideLength;
     var offsetEdge = 0.1 * squareSideLength; // distance from edge
     var offsetAngle = -5; // degrees offset from axis
 
-    // Center Point
+    // Center
     var centerX = offsetSquareSideLength;
     var centerY = offsetSquareSideLength;
 
     // Polar values
-    var radius = 1 * squareSideLength + offsetSquareSideLength - offsetEdge;
     var angle = 0 + offsetAngle;
+    var radius = 1 * squareSideLength + offsetSquareSideLength - offsetEdge;
 
-    // Attributes
-    objVictory.setAttribute("id", objName);
-    objVictory.setAttribute("style", "stroke-width:15;stroke:black;stroke-linecap:round;fill:none;opacity:1.0;");
+    // Radial Path
+    var radialPath = "";
+
+    // Return to origin
+    var pathOriginReturn = "";
 
     switch (orientation) {
         case "row1":
@@ -365,19 +383,29 @@ function victoryStrikeThrough(squareSideLength, orientation) {
         default:
     }
 
-    // Radial Distance
-    var distanceX = polarX(radius, angle);
-    var distanceY = polarY(radius, angle);
+    // Cross
+    var strPath = "m " + centerX + " " + centerY;
 
-    // Starting Point
-    var startX = centerX - distanceX;
-    var startY = centerY - distanceY;
+    // Generate paths for 2 radial lines
+    for (var i = 0; i < 2; i++) {
+        angle += i * 180;
 
-    // Set drawing points
-    objVictory.setAttribute("x1", startX);
-    objVictory.setAttribute("y1", startY);
-    objVictory.setAttribute("x2", startX + 2 * distanceX);
-    objVictory.setAttribute("y2", startY + 2 * distanceY);
+        // Radial Distance
+        var distanceX = polarX(radius, angle);
+        var distanceY = polarY(radius, angle);
+
+        // Radial Path
+        radialPath = "l " + distanceX + " " + distanceY;
+
+        // Return to origin
+        pathOriginReturn = "m " + (-1 * distanceX) + " " + (-1 * distanceY);
+
+        // Strikethrough
+        strPath += " " + radialPath + " " + pathOriginReturn;
+    }
+
+    // Attributes
+    objVictory.setAttribute("d", strPath);
 
     // Draw object on SVG GameBoard
     $('#svgGameBoard').append(objVictory);

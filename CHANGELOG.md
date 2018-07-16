@@ -8,6 +8,12 @@
 - [ ] Update README and CHANGELOG files.
 <br/><br/>
 
+### v1.9.2
+#### Date: 2018-07-16
+#### Refactor victoryStrikeThrough function.
+* Refactored *victoryStrikeThrough* function to use polar coordinates in calculating opposing radial lines.
+<br/><br/>
+
 ### v1.9.1
 #### Date: 2018-07-16
 #### Refactor cross object.
