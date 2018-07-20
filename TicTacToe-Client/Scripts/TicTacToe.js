@@ -1,12 +1,5 @@
-﻿
-// 3x3 Multidimensional Game array
+﻿// 3x3 Multidimensional Game array
 var gameArray = new Array(3);
-
-// Thickness of border for individual square on GameBoard
-var squareBorderThickness = 0;
-
-// Width of individual square on GameBoard
-var squareWidth = 0;
 
 // Which player starts the game?
 var player = "circle";
@@ -14,11 +7,9 @@ var player = "circle";
 $(document).ready(function () {
     generateGameArray(gameArray);
 
-    // Retrieve first game board square
-    var objGameBoardSquare = $('#square_0_0')[0]; // Native DOM element from jquery get()
-
-    squareBorderThickness = getSquareLineThickness(objGameBoardSquare);
-    squareWidth = objGameBoardSquare.scrollWidth - squareBorderThickness;
+    // Width of individual square on GameBoard (using Bounding Box)
+    //var squareWidth = document.getElementById("square_0_0").getBBox().width;
+    var squareWidth = $("#square_0_0")[0].getBBox().width;
 
     registerSquareClickEvents(gameArray, squareWidth);
 
@@ -32,23 +23,6 @@ function generateGameArray(cubicArray) {
     for (var i = 0; i < cubicArray.length; i++) {
         gameArray[i] = new Array(cubicArray.length);
     }
-}
-
-function getSquareLineThickness(gameBoardSquare) {
-    // Get style (for the clicked square)
-    var squareStyle = gameBoardSquare.attributes["style"].value;
-    var styleArray = squareStyle.split(";");
-
-    // Get line thickness of the path (for the referenced GameBoard square)
-    var borderThickness = 0;
-    for (var i = 0; i < styleArray.length; i++) {
-        var attributeArray = styleArray[i].split(':');
-        if (attributeArray[0].trim() == "stroke-width") {
-            borderThickness = Number(attributeArray[1].trim());
-        }
-    }
-
-    return borderThickness;
 }
 
 function registerSquareClickEvents(cubicArray, registerSquareWidth) {
@@ -258,10 +232,10 @@ function addCross(row, col, squareSideLength) {
     // Return to origin
     var pathOriginReturn = "";
 
-    // Cross
+    // Move to center of square
     var strPath = "m " + centerX + " " + centerY;
 
-    // Generate paths for 4 radial lines
+    // Generate paths for 4 radial lines (from center)
     for (var i = 0; i < 4; i++) {
         angle = i * 90 + 45;
 
@@ -383,10 +357,10 @@ function victoryStrikeThrough(squareSideLength, orientation) {
         default:
     }
 
-    // Cross
+    // Move to center of square
     var strPath = "m " + centerX + " " + centerY;
 
-    // Generate paths for 2 radial lines
+    // Generate paths for 2 opposing radial lines (from center)
     for (var i = 0; i < 2; i++) {
         angle += i * 180;
 

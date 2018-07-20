@@ -2,66 +2,62 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title>TicTacToe</title>
     <link href="Content/TicTacToe.css" rel="stylesheet" />
     <script src="Scripts/jquery-3.3.1.js"></script>
     <script src="Scripts/TicTacToe.js"></script>
 </head>
-<body>
-    <div id="divTitle" style="margin: 10px;">
-        <p>
-            <span style="font-size: large; color: blue;">TicTacToe Board</span>
-        </p>
-    </div>
-    <div id="divControls">
-        <button id="btnTest">Test</button>
-    </div>
-    <div id="divSVG">
-        <!--
-        <img src="images/GameBoard2.svg" />
-        -->
-    </div>
-    <svg id="svgGameBoard" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"
-         viewBox="0 0 300 300"
-         style="stroke-width:5; stroke:black; fill:transparent;">
+    <body>
+        <div id="divTitle" style="margin: 10px;">
+            <p>
+                <span style="font-size: large; color: blue;">TicTacToe Board</span>
+            </p>
+        </div>
+        <div id="divControls">
+            <button id="btnTest">Test</button>
+        </div>
+        <div id="divSVG">
+            <!--
+                <img src="images/GameBoard2.svg" />
+                width="100%" height="100%"
+                style="stroke-width:5; stroke:black; fill:transparent;"
+            -->
+            <svg id="svgGameBoard"
+                 width="100%" height="100%"
+                 xmlns="http://www.w3.org/2000/svg"
+                 xmlns:xlink="http://www.w3.org/1999/xlink"
+                 viewBox="0 0 300 300"
+                 style="stroke-width:5; stroke:black; fill:transparent;">
 
-        <!-- Squares -->
-        <!-- *** Without "fill:transparent", mouse click event handlers cannot be hooked to the squares. -->
-        <path id="square_0_0"
-              style="stroke-width:5; stroke:black; fill:transparent;"
-              d="m 0 0 l 100 0 0 100 -100 0 z" />
+                <!-- Squares -->
+                <!-- *** Without "fill:transparent", mouse click event handlers cannot be hooked to the squares. -->
+                <path id="square_0_0"
+                      d="m 0 0 l 100 0 0 100 -100 0 z" />
 
-        <path id="square_0_1"
-              style="stroke-width:5; stroke:black; fill:transparent;"
-              d="m 100 0 l 100 0 0 100 -100 0 z" />
+                <path id="square_0_1"
+                      d="m 100 0 l 100 0 0 100 -100 0 z" />
 
-        <path id="square_0_2"
-              style="stroke-width:5; stroke:black; fill:transparent;"
-              d="m 200 0 l 100 0 0 100 -100 0 z" />
+                <path id="square_0_2"
+                      d="m 200 0 l 100 0 0 100 -100 0 z" />
 
-        <path id="square_1_0"
-              style="stroke-width:5; stroke:black; fill:transparent;"
-              d="m 0 100 l 100 0 0 100 -100 0 z" />
+                <path id="square_1_0"
+                      d="m 0 100 l 100 0 0 100 -100 0 z" />
 
-        <path id="square_1_1"
-              style="stroke-width:5; stroke:black; fill:transparent;"
-              d="m 100 100 l 100 0 0 100 -100 0 z" />
+                <path id="square_1_1"
+                      d="m 100 100 l 100 0 0 100 -100 0 z" />
 
-        <path id="square_1_2"
-              style="stroke-width:5; stroke:black; fill:transparent;"
-              d="m 200 100 l 100 0 0 100 -100 0 z" />
+                <path id="square_1_2"
+                      d="m 200 100 l 100 0 0 100 -100 0 z" />
 
-        <path id="square_2_0"
-              style="stroke-width:5; stroke:black; fill:transparent;"
-              d="m 0 200 l 100 0 0 100 -100 0 z" />
+                <path id="square_2_0"
+                      d="m 0 200 l 100 0 0 100 -100 0 z" />
 
-        <path id="square_2_1"
-              style="stroke-width:5; stroke:black; fill:transparent;"
-              d="m 100 200 l 100 0 0 100 -100 0 z" />
+                <path id="square_2_1"
+                      d="m 100 200 l 100 0 0 100 -100 0 z" />
 
-        <path id="square_2_2"
-              style="stroke-width:5; stroke:black; fill:transparent;"
-              d="m 200 200 l 100 0 0 100 -100 0 z" />
-    </svg>
-</body>
+                <path id="square_2_2"
+                      d="m 200 200 l 100 0 0 100 -100 0 z" />
+            </svg>
+        </div>
+    </body>
 </html>

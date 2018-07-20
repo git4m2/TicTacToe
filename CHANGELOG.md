@@ -8,6 +8,14 @@
 - [ ] Update README and CHANGELOG files.
 <br/><br/>
 
+### v1.10.0
+#### Date: 2018-07-20
+#### Incorporate Get Bounding Box method.
+* Use *Bounding Box* to obtain width of individual square on GameBoard.
+* Removed *getSquareLineThickness* function and var *borderThickness* to simplify code.
+* Refactor *default.html* to simplify code.
+<br/><br/>
+
 ### v1.9.2
 #### Date: 2018-07-16
 #### Refactor victoryStrikeThrough function.
