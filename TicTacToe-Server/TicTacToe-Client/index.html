@@ -3,9 +3,10 @@
 <head>
     <meta charset="utf-8" />
     <title>TicTacToe</title>
-    <link href="Content/TicTacToe.css" rel="stylesheet" />
-    <script src="Scripts/jquery-3.3.1.js"></script>
-    <script src="Scripts/TicTacToe.js"></script>
+    <link href="stylesheets/TicTacToe.css" rel="stylesheet" />
+    <script src="scripts/jquery-3.3.1.js"></script>
+    <script src="scripts/socket.io.js"></script>
+    <!--<script src="scripts/TicTacToe.js"></script>-->
 </head>
     <body>
         <div id="divTitle" style="margin: 10px;">
@@ -15,6 +16,16 @@
         </div>
         <div id="divControls">
             <button id="btnTest">Test</button>
+        </div>
+        <div class="userContainer">
+            <h2>Current User</h2>
+            <div id="userID"></div>
+            <h3>Users</h3>
+            <div id="users"></div>
+        </div>
+        <div class="conversationContainer">
+            <input id="data" />
+            <div id="conversation"></div>
         </div>
         <div id="divSVG">
             <!--

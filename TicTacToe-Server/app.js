@@ -19,12 +19,14 @@ var playerCount = 0;
 var usernames = {}; // JSON
 
 //app.use(express.static(__dirname + '/../TicTacToe-Client/public'));
+app.use(express.static(__dirname + '/TicTacToe-Client'));
 
 app.get('/', function (req, res) {
     res.writeHead(200, { 'Content-Type': 'text/plain' });
     res.end('Hello World\n' + res.connection.localPort);
 
     //res.sendfile(__dirname + '/../TicTacToe-Client/public/index.html');
+    res.sendfile(__dirname + '/TicTacToe-Client/index.html');
 });
 
 //io.sockets.on('connection', function (socket) {

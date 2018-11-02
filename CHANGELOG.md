@@ -9,6 +9,12 @@
 - [ ] Update README and CHANGELOG files.
 <br/><br/>
 
+### v2.1.0
+#### Date: 2018-11-02
+#### Embed TicTacToe-Client project files within TicTacToe-Server project.
+* Embed TicTacToe-Client project files within TicTacToe-Server project for file availability.
+<br/><br/>
+
 ### v2.0.0
 #### Date: 2018-11-02
 #### Create Server for Multiplayer framework.
