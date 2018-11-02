@@ -3,9 +3,16 @@
 ## Changelog
 
 ### [TODO]
+- [ ] Generate code for server-side multiplayer game.
 - [ ] Create Event Log to maintain history of each move by each player.
 - [ ] Reset button to clear the GameBoard.
 - [ ] Update README and CHANGELOG files.
+<br/><br/>
+
+### v2.0.0
+#### Date: 2018-11-02
+#### Create Server for Multiplayer framework.
+* Added TicTacToe-Server project to solution.
 <br/><br/>
 
 ### v1.10.0
