@@ -1,58 +1,70 @@
 ﻿// 3x3 Multidimensional Game array
 var gameArray = new Array(3);
 
-// Which player starts the game?
-var player = "circle";
+// User array
+var usernames = {};
+
+// Which gamePiece starts the game?
+var gamePiece = "circle";
+
+// Current User
+var currentUser = "";
 
 $(document).ready(function () {
+    initialize();
+});
+
+function initialize() {
+    socket = io.connect('http://localhost:1337');
+    socket.on('connect', addUser);
+    socket.on('updatechat', processMessage);
+    socket.on('updateusers', updateUserList);
+
     generateGameArray(gameArray);
 
-    // Width of individual square on GameBoard (using Bounding Box)
-    //var squareWidth = document.getElementById("square_0_0").getBBox().width;
-    var squareWidth = $("#square_0_0")[0].getBBox().width;
-
-    registerSquareClickEvents(gameArray, squareWidth);
+    registerSquareClickEvents(gameArray);
 
     $('#btnTest').on('click', function () {
         test(gameArray);
     });
-});
 
-function generateGameArray(cubicArray) {
+}
+
+function generateGameArray(squareArray) {
     // Multidimensional array
-    for (var i = 0; i < cubicArray.length; i++) {
-        gameArray[i] = new Array(cubicArray.length);
+    for (var i = 0; i < squareArray.length; i++) {
+        gameArray[i] = new Array(squareArray.length);
     }
 }
 
-function registerSquareClickEvents(cubicArray, registerSquareWidth) {
+function registerSquareClickEvents(squareArray) {
     // GameBoard is a 3x3 matrix
     // Rows
-    for (var i = 0; i < cubicArray.length; i++) {
+    for (var i = 0; i < squareArray.length; i++) {
         // Columns
-        for (var j = 0; j < cubicArray[0].length; j++) {
+        for (var j = 0; j < squareArray[0].length; j++) {
             var refSquareName = "#" + "square" + "_" + i + "_" + j;
 
             // Register onclick event
             $(refSquareName).on('click', function () {
-                clickSquare(this, registerSquareWidth);
+                clickSquare(this);
             });
         }
     }
 }
 
-function test(cubicArray) {
+function test(squareArray) {
     var arrayString = "";
-    for (var i = 0; i < cubicArray.length; i++) {
-        for (var j = 0; j < cubicArray[0].length; j++) {
-            if (j == 0) {
-                arrayString += cubicArray[i][j];
+    for (var i = 0; i < squareArray.length; i++) {
+        for (var j = 0; j < squareArray[0].length; j++) {
+            if (j === 0) {
+                arrayString += squareArray[i][j];
             } else {
-                arrayString += "," + cubicArray[i][j];
+                arrayString += "," + squareArray[i][j];
             }
         }
 
-        if (i < cubicArray.length - 1) {
+        if (i < squareArray.length - 1) {
             arrayString += "\n";
         }
     }
@@ -60,102 +72,136 @@ function test(cubicArray) {
     alert("Game array: \n" + arrayString);
 }
 
-function clickSquare(object, clickSquareWidth) {
-    // Get [row][column] info (for the clicked square)
-    var objectNameArray = object.id.split("_");
-    var row = objectNameArray[1];
-    var column = objectNameArray[2];
+function clickSquare(object) {
+    // Get values for the referenced square
+    var row = getRowNumber(object.id);
+    var column = getColumnNumber(object.id);
 
     // Does an object (circle or cross) already exist in the game array (i.e. duplicates)?
     if (gameArray[row][column] === undefined) {
-        // Add object to Game array
-        gameArray[row][column] = player; // "circle" or "cross"
+        // Current gamePiece?
+        if (gamePiece === "circle") {
+            // Add object to Game array
+            gameArray[row][column] = gamePiece; // "circle" or "cross"
 
-        // Current player?
-        if (player == "circle") {
             // Add object to GameBoard
-            addCircle(row, column, clickSquareWidth);
+            drawCircle(object.id);
 
-            // Switch player
-            player = "cross";
-        } else if (player == "cross") {
+            // Send Message
+            sendMessage(object.id, gamePiece);
+
+            // Switch gamePiece
+            gamePiece = "cross";
+        } else if (gamePiece === "cross") {
+            // Add object to Game array
+            gameArray[row][column] = gamePiece; // "circle" or "cross"
+
             // Add object to GameBoard
-            addCross(row, column, clickSquareWidth);
+            drawCross(object.id);
 
-            // Switch player
-            player = "circle";
+            // Send Message
+            sendMessage(object.id, gamePiece);
+
+            // Switch gamePiece
+            gamePiece = "circle";
         } else {
             // Error...
         }
 
         // Victory?
-        checkVictory(gameArray, clickSquareWidth);
+        checkVictory(gameArray);
     }
 }
 
-function checkVictory(cubicArray, victorySquareWidth) {
-    var result = false;
+function getRowNumber(refSquareName) {
+    // Get [row][column] info for the referenced square
+    var objectNameArray = refSquareName.split("_");
+    var row = objectNameArray[1];
+    return row;
+}
+
+function getColumnNumber(refSquareName) {
+    // Get [row][column] info for the referenced square
+    var objectNameArray = refSquareName.split("_");
+    var column = objectNameArray[2];
+    return column;
+}
+
+function getSquareWidth(refSquareName) {
+    // Get width for the referenced square
+    var squareWidth = $("#" + refSquareName)[0].getBBox().width;
+    return squareWidth;
+}
+
+function isSquareReference(data) {
+    var pattern = /square_[0-2]_[0-2]/;
+    var isMatch = pattern.test(data); // true or false
+    return isMatch;
+}
+
+function checkVictory(squareArray) {
+    var victory = false;
     var lineData = "";
 
     // Check for victory (3 objects in a line)
 
     // Row 1
-    lineData = cubicArray[0][0] + "," + cubicArray[0][1] + "," + cubicArray[0][2];
-    if (lineData == "circle,circle,circle" || lineData == "cross,cross,cross") {
-        victoryStrikeThrough(victorySquareWidth, "row1");
-        result = true;
+    lineData = squareArray[0][0] + "," + squareArray[0][1] + "," + squareArray[0][2];
+    if (lineData === "circle,circle,circle" || lineData === "cross,cross,cross") {
+        drawVictoryStrikeThrough("row1");
+        victory = true;
     }
 
     // Row 2
-    lineData = cubicArray[1][0] + "," + cubicArray[1][1] + "," + cubicArray[1][2];
-    if (lineData == "circle,circle,circle" || lineData == "cross,cross,cross") {
-        victoryStrikeThrough(victorySquareWidth, "row2");
-        result = true;
+    lineData = squareArray[1][0] + "," + squareArray[1][1] + "," + squareArray[1][2];
+    if (lineData === "circle,circle,circle" || lineData === "cross,cross,cross") {
+        drawVictoryStrikeThrough("row2");
+        victory = true;
     }
 
     // Row 3
-    lineData = cubicArray[2][0] + "," + cubicArray[2][1] + "," + cubicArray[2][2];
-    if (lineData == "circle,circle,circle" || lineData == "cross,cross,cross") {
-        victoryStrikeThrough(victorySquareWidth, "row3");
-        result = true;
+    lineData = squareArray[2][0] + "," + squareArray[2][1] + "," + squareArray[2][2];
+    if (lineData === "circle,circle,circle" || lineData === "cross,cross,cross") {
+        drawVictoryStrikeThrough("row3");
+        victory = true;
     }
 
     // Column 1
-    lineData = cubicArray[0][0] + "," + cubicArray[1][0] + "," + cubicArray[2][0];
-    if (lineData == "circle,circle,circle" || lineData == "cross,cross,cross") {
-        victoryStrikeThrough(victorySquareWidth, "column1");
-        result = true;
+    lineData = squareArray[0][0] + "," + squareArray[1][0] + "," + squareArray[2][0];
+    if (lineData === "circle,circle,circle" || lineData === "cross,cross,cross") {
+        drawVictoryStrikeThrough("column1");
+        victory = true;
     }
 
     // Column 2
-    lineData = cubicArray[0][1] + "," + cubicArray[1][1] + "," + cubicArray[2][1];
-    if (lineData == "circle,circle,circle" || lineData == "cross,cross,cross") {
-        victoryStrikeThrough(victorySquareWidth, "column2");
-        result = true;
+    lineData = squareArray[0][1] + "," + squareArray[1][1] + "," + squareArray[2][1];
+    if (lineData === "circle,circle,circle" || lineData === "cross,cross,cross") {
+        drawVictoryStrikeThrough("column2");
+        victory = true;
     }
 
     // Column 3
-    lineData = cubicArray[0][2] + "," + cubicArray[1][2] + "," + cubicArray[2][2];
-    if (lineData == "circle,circle,circle" || lineData == "cross,cross,cross") {
-        victoryStrikeThrough(victorySquareWidth, "column3");
-        result = true;
+    lineData = squareArray[0][2] + "," + squareArray[1][2] + "," + squareArray[2][2];
+    if (lineData === "circle,circle,circle" || lineData === "cross,cross,cross") {
+        drawVictoryStrikeThrough("column3");
+        victory = true;
     }
 
     // "Backslash" Diagonal ("\")
-    lineData = cubicArray[0][0] + "," + cubicArray[1][1] + "," + cubicArray[2][2];
-    if (lineData == "circle,circle,circle" || lineData == "cross,cross,cross") {
-        victoryStrikeThrough(victorySquareWidth, "backSlash");
-        result = true;
+    lineData = squareArray[0][0] + "," + squareArray[1][1] + "," + squareArray[2][2];
+    if (lineData === "circle,circle,circle" || lineData === "cross,cross,cross") {
+        drawVictoryStrikeThrough("backSlash");
+        victory = true;
     }
 
     // "Forward Slash" Diagonal ("/")
-    lineData = cubicArray[0][2] + "," + cubicArray[1][1] + "," + cubicArray[2][0];
-    if (lineData == "circle,circle,circle" || lineData == "cross,cross,cross") {
-        victoryStrikeThrough(victorySquareWidth, "forwardSlash");
-        result = true;
+    lineData = squareArray[0][2] + "," + squareArray[1][1] + "," + squareArray[2][0];
+    if (lineData === "circle,circle,circle" || lineData === "cross,cross,cross") {
+        drawVictoryStrikeThrough("forwardSlash");
+        victory = true;
     }
 
-    if (result == true) {
+    if (victory === true) {
         //alert("Victory!");
         //test(gameArray);
     }
@@ -177,10 +223,16 @@ function polarY(polarRadius, polarAngle) {
     return polarDistanceY;
 }
 
+
 // DRAWING SHAPES
-function addCircle(row, col, squareSideLength) {
+function drawCircle(refSquareName) {
+    // Get values for the referenced square
+    var row = getRowNumber(refSquareName);
+    var column = getColumnNumber(refSquareName);
+    var squareSideLength = getSquareWidth(refSquareName);
+
     // Draw SVG circle
-    var objName = "circle" + "_" + row + "_" + col;
+    var objName = "circle" + "_" + row + "_" + column;
     var objCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
 
     // Attributes
@@ -191,7 +243,7 @@ function addCircle(row, col, squareSideLength) {
     var offsetSquareSideLength = 0.5 * squareSideLength;
 
     // Center
-    var centerX = col * squareSideLength + offsetSquareSideLength;
+    var centerX = column * squareSideLength + offsetSquareSideLength;
     var centerY = row * squareSideLength + offsetSquareSideLength;
 
     // Polar values
@@ -206,9 +258,14 @@ function addCircle(row, col, squareSideLength) {
     $('#svgGameBoard').append(objCircle);
 }
 
-function addCross(row, col, squareSideLength) {
-    // Draw SVG cross
-    var objName = "cross" + "_" + row + "_" + col;
+function drawCross(refSquareName) {
+    // Get values for the referenced square
+    var row = getRowNumber(refSquareName);
+    var column = getColumnNumber(refSquareName);
+    var squareSideLength = getSquareWidth(refSquareName);
+
+   // Draw SVG cross
+    var objName = "cross" + "_" + row + "_" + column;
     var objCross = document.createElementNS("http://www.w3.org/2000/svg", "path");
 
     // Attributes
@@ -219,7 +276,7 @@ function addCross(row, col, squareSideLength) {
     var offsetSquareSideLength = 0.5 * squareSideLength;
 
     // Center
-    var centerX = col * squareSideLength + offsetSquareSideLength;
+    var centerX = column * squareSideLength + offsetSquareSideLength;
     var centerY = row * squareSideLength + offsetSquareSideLength;
 
     // Polar values
@@ -260,7 +317,11 @@ function addCross(row, col, squareSideLength) {
     $('#svgGameBoard').append(objCross);
 }
 
-function victoryStrikeThrough(squareSideLength, orientation) {
+function drawVictoryStrikeThrough(orientation) {
+    // Get values for the referenced square
+    var refSquareName = "square_0_0";
+    var squareSideLength = getSquareWidth(refSquareName);
+
     // Draw SVG Victory Strikethrough
     var objName = "victoryStrikeThrough";
     var objVictory = document.createElementNS("http://www.w3.org/2000/svg", "path");
@@ -384,3 +445,39 @@ function victoryStrikeThrough(squareSideLength, orientation) {
     // Draw object on SVG GameBoard
     $('#svgGameBoard').append(objVictory);
 }
+
+
+// MESSAGING
+function addUser() {
+    currentUser = prompt("What's your name?");
+    $('#userID').text(currentUser);
+    socket.emit('adduser', currentUser);
+}
+
+function updateUserList(data) {
+    $('#users').empty();
+    $.each(data, function (key, value) {
+        // Update user array
+        usernames[key] = value;
+
+        // Update webpage with user info
+        //$('#users').append('<div>' + key + '</div>');
+        $('#users').append('<div>' + key + ": " + value + '</div>');
+    });
+}
+
+function sendMessage(squareName, playerMarker) {
+    var message = squareName;
+    socket.emit('sendchat', message, playerMarker);
+}
+
+function processMessage(username, data) {
+    $('<b>' + username + ':</b> ' + data + '</br>').insertAfter($('#conversation'));
+
+    // Was a square clicked?
+    if (isSquareReference(data)) {
+        var objSquare = $("#" + data)[0];
+        clickSquare(objSquare);
+    }
+}
+

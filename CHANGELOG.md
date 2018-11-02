@@ -9,6 +9,12 @@
 - [ ] Update README and CHANGELOG files.
 <br/><br/>
 
+### v2.2.0
+#### Date: 2018-11-02
+#### First iteration of multiplayer code.
+* First iteration of functional multiplayer code, albeit with multiple issues.
+<br/><br/>
+
 ### v2.1.0
 #### Date: 2018-11-02
 #### Embed TicTacToe-Client project files within TicTacToe-Server project.
