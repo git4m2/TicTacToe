@@ -1,12 +1,6 @@
 ﻿// 3x3 Multidimensional Game array
 var gameArray = new Array(3);
 
-// Which gamePiece starts the game?
-//var gamePiece = "circle";
-
-// Current User
-var currentUser = "";
-
 $(document).ready(function () {
     initialize();
 });
@@ -18,20 +12,21 @@ function initialize() {
     socket.on('updateusers', updateUserList);
     socket.on('updatechat', processMessage);
     socket.on('squareSelected', selectSquare);
+    socket.on('victory', drawVictoryStrikeThrough);
 
     generateGameArray(gameArray);
 
     registerSquareClickEvents(gameArray);
 
-    $('#btnTest').on('click', function () {
-        test(gameArray);
-    });
+    //$('#btnTest').on('click', function () {
+    //    test(gameArray);
+    //});
 
 }
 
 // SOCKET MESSAGING
 function addUser() {
-    currentUser = prompt("What's your name?");
+    var currentUser = prompt("What's your name?");
     $('#userID').text(currentUser);
     socket.emit('adduser', currentUser);
 }
@@ -40,7 +35,6 @@ function updateUserList(data) {
     $('#users').empty();
     $.each(data, function (key, value) {
         // Update webpage with user info
-        //$('#users').append('<div>' + key + '</div>');
         $('#users').append('<div>' + key + ": " + value + '</div>');
     });
 }
@@ -48,12 +42,12 @@ function updateUserList(data) {
 function processMessage(username, data) {
     $('<b>' + username + ':</b> ' + data + '</br>').insertAfter($('#conversation'));
 
-    // Was a square clicked?
-    if (isSquareReference(data)) {
-        var objSquare = $("#" + data)[0];
-        clickSquare(objSquare);
-        //clickSquare(objSquare, username);
-    }
+    //// Was a square clicked?
+    //if (isSquareReference(data)) {
+    //    var objSquare = $("#" + data)[0];
+    //    clickSquare(objSquare);
+    //    //clickSquare(objSquare, username);
+    //}
 }
 
 function sendMessage(squareName, playerMarker) {
@@ -67,7 +61,7 @@ function selectSquare(squareName, gamePiece) {
     } else if (gamePiece === "cross") {
         drawCross(squareName);
     } else if (gamePiece === "disallow") {
-        //drawDisallow(squareName);
+        drawDisallow(squareName);
     } else {
         // Error...
     }
@@ -181,79 +175,79 @@ function getSquareWidth(refSquareName) {
     return squareWidth;
 }
 
-function isSquareReference(data) {
-    var pattern = /square_[0-2]_[0-2]/;
-    var isMatch = pattern.test(data); // true or false
-    return isMatch;
-}
+//function isSquareReference(data) {
+//    var pattern = /square_[0-2]_[0-2]/;
+//    var isMatch = pattern.test(data); // true or false
+//    return isMatch;
+//}
 
-function checkVictory(squareArray) {
-    var victory = false;
-    var lineData = "";
+//function checkVictory(squareArray) {
+//    var victory = false;
+//    var lineData = "";
 
-    // Check for victory (3 objects in a line)
+//    // Check for victory (3 objects in a line)
 
-    // Row 1
-    lineData = squareArray[0][0] + "," + squareArray[0][1] + "," + squareArray[0][2];
-    if (lineData === "circle,circle,circle" || lineData === "cross,cross,cross") {
-        drawVictoryStrikeThrough("row1");
-        victory = true;
-    }
+//    // Row 1
+//    lineData = squareArray[0][0] + "," + squareArray[0][1] + "," + squareArray[0][2];
+//    if (lineData === "circle,circle,circle" || lineData === "cross,cross,cross") {
+//        drawVictoryStrikeThrough("row1");
+//        victory = true;
+//    }
 
-    // Row 2
-    lineData = squareArray[1][0] + "," + squareArray[1][1] + "," + squareArray[1][2];
-    if (lineData === "circle,circle,circle" || lineData === "cross,cross,cross") {
-        drawVictoryStrikeThrough("row2");
-        victory = true;
-    }
+//    // Row 2
+//    lineData = squareArray[1][0] + "," + squareArray[1][1] + "," + squareArray[1][2];
+//    if (lineData === "circle,circle,circle" || lineData === "cross,cross,cross") {
+//        drawVictoryStrikeThrough("row2");
+//        victory = true;
+//    }
 
-    // Row 3
-    lineData = squareArray[2][0] + "," + squareArray[2][1] + "," + squareArray[2][2];
-    if (lineData === "circle,circle,circle" || lineData === "cross,cross,cross") {
-        drawVictoryStrikeThrough("row3");
-        victory = true;
-    }
+//    // Row 3
+//    lineData = squareArray[2][0] + "," + squareArray[2][1] + "," + squareArray[2][2];
+//    if (lineData === "circle,circle,circle" || lineData === "cross,cross,cross") {
+//        drawVictoryStrikeThrough("row3");
+//        victory = true;
+//    }
 
-    // Column 1
-    lineData = squareArray[0][0] + "," + squareArray[1][0] + "," + squareArray[2][0];
-    if (lineData === "circle,circle,circle" || lineData === "cross,cross,cross") {
-        drawVictoryStrikeThrough("column1");
-        victory = true;
-    }
+//    // Column 1
+//    lineData = squareArray[0][0] + "," + squareArray[1][0] + "," + squareArray[2][0];
+//    if (lineData === "circle,circle,circle" || lineData === "cross,cross,cross") {
+//        drawVictoryStrikeThrough("column1");
+//        victory = true;
+//    }
 
-    // Column 2
-    lineData = squareArray[0][1] + "," + squareArray[1][1] + "," + squareArray[2][1];
-    if (lineData === "circle,circle,circle" || lineData === "cross,cross,cross") {
-        drawVictoryStrikeThrough("column2");
-        victory = true;
-    }
+//    // Column 2
+//    lineData = squareArray[0][1] + "," + squareArray[1][1] + "," + squareArray[2][1];
+//    if (lineData === "circle,circle,circle" || lineData === "cross,cross,cross") {
+//        drawVictoryStrikeThrough("column2");
+//        victory = true;
+//    }
 
-    // Column 3
-    lineData = squareArray[0][2] + "," + squareArray[1][2] + "," + squareArray[2][2];
-    if (lineData === "circle,circle,circle" || lineData === "cross,cross,cross") {
-        drawVictoryStrikeThrough("column3");
-        victory = true;
-    }
+//    // Column 3
+//    lineData = squareArray[0][2] + "," + squareArray[1][2] + "," + squareArray[2][2];
+//    if (lineData === "circle,circle,circle" || lineData === "cross,cross,cross") {
+//        drawVictoryStrikeThrough("column3");
+//        victory = true;
+//    }
 
-    // "Backslash" Diagonal ("\")
-    lineData = squareArray[0][0] + "," + squareArray[1][1] + "," + squareArray[2][2];
-    if (lineData === "circle,circle,circle" || lineData === "cross,cross,cross") {
-        drawVictoryStrikeThrough("backSlash");
-        victory = true;
-    }
+//    // "Backslash" Diagonal ("\")
+//    lineData = squareArray[0][0] + "," + squareArray[1][1] + "," + squareArray[2][2];
+//    if (lineData === "circle,circle,circle" || lineData === "cross,cross,cross") {
+//        drawVictoryStrikeThrough("backSlash");
+//        victory = true;
+//    }
 
-    // "Forward Slash" Diagonal ("/")
-    lineData = squareArray[0][2] + "," + squareArray[1][1] + "," + squareArray[2][0];
-    if (lineData === "circle,circle,circle" || lineData === "cross,cross,cross") {
-        drawVictoryStrikeThrough("forwardSlash");
-        victory = true;
-    }
+//    // "Forward Slash" Diagonal ("/")
+//    lineData = squareArray[0][2] + "," + squareArray[1][1] + "," + squareArray[2][0];
+//    if (lineData === "circle,circle,circle" || lineData === "cross,cross,cross") {
+//        drawVictoryStrikeThrough("forwardSlash");
+//        victory = true;
+//    }
 
-    if (victory === true) {
-        //alert("Victory!");
-        //test(gameArray);
-    }
-}
+//    if (victory === true) {
+//        //alert("Victory!");
+//        //test(gameArray);
+//    }
+//}
 
 function polarX(polarRadius, polarAngle) {
     // polarAngle passed in degrees, theta calculated in radians

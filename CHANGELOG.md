@@ -3,11 +3,17 @@
 ## Changelog
 
 ### [TODO]
+- [ ] Generate GameBoard SVG code on server and push to client.
 - [ ] Reset button to clear the GameBoard.
 - [ ] Update "TicTacToe Sockets Mind Map" (xml, html) workflow diagram.
 - [ ] Update README and CHANGELOG files.
-- [X] Determine last gamepiece to move "circle" or "cross".
-- [X] Create Event Log to maintain history of each move by each player.
+- [X] Move checkVictory function to server.
+<br/><br/>
+
+### v2.3.2
+#### Date: 2018-11-30
+#### Move checkVictory function to server.
+* Utilize history (on server) versus gameArray (on client) for checkVictory function (on server).
 <br/><br/>
 
 ### v2.3.1
