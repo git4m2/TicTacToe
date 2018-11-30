@@ -9,6 +9,13 @@
 - [ ] Update README and CHANGELOG files.
 <br/><br/>
 
+### v2.2.1
+#### Date: 2018-11-29
+#### Refactor code to swap username with gamepiece.
+* Swapped username (ex. "Andy", "Bob") with gamepiece ("circle" or "cross") to facilitate easier array referencing.
+* Added "TicTacToe Sockets Mind Map.xml" workflow diagram.
+<br/><br/>
+
 ### v2.2.0
 #### Date: 2018-11-02
 #### First iteration of multiplayer code.

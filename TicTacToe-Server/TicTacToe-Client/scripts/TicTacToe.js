@@ -1,9 +1,6 @@
 ﻿// 3x3 Multidimensional Game array
 var gameArray = new Array(3);
 
-// User array
-var usernames = {};
-
 // Which gamePiece starts the game?
 var gamePiece = "circle";
 
@@ -14,11 +11,12 @@ $(document).ready(function () {
     initialize();
 });
 
+/// INITIALIZATION
 function initialize() {
     socket = io.connect('http://localhost:1337');
     socket.on('connect', addUser);
-    socket.on('updatechat', processMessage);
     socket.on('updateusers', updateUserList);
+    socket.on('updatechat', processMessage);
 
     generateGameArray(gameArray);
 
@@ -30,6 +28,39 @@ function initialize() {
 
 }
 
+// SOCKET MESSAGING
+function addUser() {
+    currentUser = prompt("What's your name?");
+    $('#userID').text(currentUser);
+    socket.emit('adduser', currentUser);
+}
+
+function updateUserList(data) {
+    $('#users').empty();
+    $.each(data, function (key, value) {
+        // Update webpage with user info
+        //$('#users').append('<div>' + key + '</div>');
+        $('#users').append('<div>' + key + ": " + value + '</div>');
+    });
+}
+
+function processMessage(username, data) {
+    $('<b>' + username + ':</b> ' + data + '</br>').insertAfter($('#conversation'));
+
+    // Was a square clicked?
+    if (isSquareReference(data)) {
+        var objSquare = $("#" + data)[0];
+        clickSquare(objSquare);
+        //clickSquare(objSquare, username);
+    }
+}
+
+function sendMessage(squareName, playerMarker) {
+    var message = squareName;
+    socket.emit('sendchat', message, playerMarker);
+}
+
+/// GAME ARRAY
 function generateGameArray(squareArray) {
     // Multidimensional array
     for (var i = 0; i < squareArray.length; i++) {
@@ -37,22 +68,7 @@ function generateGameArray(squareArray) {
     }
 }
 
-function registerSquareClickEvents(squareArray) {
-    // GameBoard is a 3x3 matrix
-    // Rows
-    for (var i = 0; i < squareArray.length; i++) {
-        // Columns
-        for (var j = 0; j < squareArray[0].length; j++) {
-            var refSquareName = "#" + "square" + "_" + i + "_" + j;
-
-            // Register onclick event
-            $(refSquareName).on('click', function () {
-                clickSquare(this);
-            });
-        }
-    }
-}
-
+/// TEST DISPLAY
 function test(squareArray) {
     var arrayString = "";
     for (var i = 0; i < squareArray.length; i++) {
@@ -72,6 +88,23 @@ function test(squareArray) {
     alert("Game array: \n" + arrayString);
 }
 
+/// REGISTER CLICK EVENTS
+function registerSquareClickEvents(squareArray) {
+    // GameBoard is a 3x3 matrix
+    // Rows
+    for (var i = 0; i < squareArray.length; i++) {
+        // Columns
+        for (var j = 0; j < squareArray[0].length; j++) {
+            var refSquareName = "#" + "square" + "_" + i + "_" + j;
+
+            // Register onclick event
+            $(refSquareName).on('click', function () {
+                clickSquare(this);
+            });
+        }
+    }
+}
+
 function clickSquare(object) {
     // Get values for the referenced square
     var row = getRowNumber(object.id);
@@ -79,11 +112,12 @@ function clickSquare(object) {
 
     // Does an object (circle or cross) already exist in the game array (i.e. duplicates)?
     if (gameArray[row][column] === undefined) {
+
+        // Add object to Game array
+        gameArray[row][column] = gamePiece; // "circle" or "cross"
+
         // Current gamePiece?
         if (gamePiece === "circle") {
-            // Add object to Game array
-            gameArray[row][column] = gamePiece; // "circle" or "cross"
-
             // Add object to GameBoard
             drawCircle(object.id);
 
@@ -93,9 +127,6 @@ function clickSquare(object) {
             // Switch gamePiece
             gamePiece = "cross";
         } else if (gamePiece === "cross") {
-            // Add object to Game array
-            gameArray[row][column] = gamePiece; // "circle" or "cross"
-
             // Add object to GameBoard
             drawCross(object.id);
 
@@ -223,8 +254,7 @@ function polarY(polarRadius, polarAngle) {
     return polarDistanceY;
 }
 
-
-// DRAWING SHAPES
+/// DRAWING SHAPES
 function drawCircle(refSquareName) {
     // Get values for the referenced square
     var row = getRowNumber(refSquareName);
@@ -445,39 +475,3 @@ function drawVictoryStrikeThrough(orientation) {
     // Draw object on SVG GameBoard
     $('#svgGameBoard').append(objVictory);
 }
-
-
-// MESSAGING
-function addUser() {
-    currentUser = prompt("What's your name?");
-    $('#userID').text(currentUser);
-    socket.emit('adduser', currentUser);
-}
-
-function updateUserList(data) {
-    $('#users').empty();
-    $.each(data, function (key, value) {
-        // Update user array
-        usernames[key] = value;
-
-        // Update webpage with user info
-        //$('#users').append('<div>' + key + '</div>');
-        $('#users').append('<div>' + key + ": " + value + '</div>');
-    });
-}
-
-function sendMessage(squareName, playerMarker) {
-    var message = squareName;
-    socket.emit('sendchat', message, playerMarker);
-}
-
-function processMessage(username, data) {
-    $('<b>' + username + ':</b> ' + data + '</br>').insertAfter($('#conversation'));
-
-    // Was a square clicked?
-    if (isSquareReference(data)) {
-        var objSquare = $("#" + data)[0];
-        clickSquare(objSquare);
-    }
-}
-

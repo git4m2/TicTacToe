@@ -16,7 +16,7 @@ var io = require('socket.io').listen(server);
 var maxPlayerCount = 2;
 var playerCount = 0;
 
-var usernames = {}; // JSON
+var players = {}; // JSON (i.e. key="circle"/"cross", value="John")
 
 app.use(express.static(__dirname + '/TicTacToe-Client'));
 
@@ -28,41 +28,56 @@ app.get('/', function (req, res) {
 });
 
 io.sockets.on('connection', function (socket) {
-    socket.on('sendchat', function (data, marker) {
-        console.log('user: ' + socket.username + ', ' + 'data: ' + data + ', ' + 'marker: ' + marker);
-        // ex. user: John, data: square_0_0, marker: circle
-
-        io.sockets.emit('updatechat', socket.username, data);
-    });
-
     socket.on('adduser', function (username) {
-        playerCount = Object.keys(usernames).length;
+        playerCount = Object.keys(players).length;
 
         if (playerCount < maxPlayerCount) {
             switch (playerCount) {
                 case 0:
-                    usernames[username] = "circle";
+                    //players[username] = "circle";
+                    //players["circle"] = username;
+                    socket.gamePiece = "circle";
+                    players[socket.gamePiece] = username;
                     break;
 
                 case 1:
-                    usernames[username] = "cross";
+                    //players[username] = "cross";
+                    //players["cross"] = username;
+                    socket.gamePiece = "cross";
+                    players[socket.gamePiece] = username;
                     break;
 
                 default:
             }
 
-            socket.username = username;
+            //socket.username = username;
             socket.emit('updatechat', 'SERVER', 'You (' + username + ') have connected');
             socket.broadcast.emit('updatechat', 'SERVER', username + ' has connected');
-            io.sockets.emit('updateusers', usernames);
+            io.sockets.emit('updateusers', players);
         }
     });
 
+    socket.on('sendchat', function (data, marker) {
+        //console.log('user: ' + socket.username + ', ' + 'data: ' + data + ', ' + 'marker: ' + marker);
+        console.log('user: ' + socket.gamePiece + ', ' + 'data: ' + data + ', ' + 'marker: ' + marker);
+        // ex. user: John, data: square_0_0, marker: circle
+
+        //io.sockets.emit('updatechat', socket.username, data);
+        io.sockets.emit('updatechat', socket.gamePiece, data);
+    });
+
     socket.on('disconnect', function () {
-        if (usernames[socket.username] !== undefined) {
-            delete usernames[socket.username];
-            io.sockets.emit('updateusers', usernames);
-            socket.broadcast.emit('updatechat', 'SERVER', socket.username + ' has disconnected');
+        //if (players[socket.username] !== undefined) {
+        //    delete players[socket.username];
+        //    io.sockets.emit('updateusers', players);
+        //    socket.broadcast.emit('updatechat', 'SERVER', socket.username + ' has disconnected');
+        //}
+
+        if (players[socket.gamePiece] !== undefined) {
+            var disconnectedUser = players[socket.gamePiece];
+            delete players[socket.gamePiece];
+            io.sockets.emit('updateusers', players);
+            socket.broadcast.emit('updatechat', 'SERVER', disconnectedUser + ' has disconnected');
         }
     });
 });
