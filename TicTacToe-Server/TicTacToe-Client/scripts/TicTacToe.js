@@ -14,6 +14,8 @@ function initialize() {
     socket.on('squareSelected', selectSquare);
     socket.on('victory', drawVictoryStrikeThrough);
 
+    drawGameBoardSquares();
+
     generateGameArray(gameArray);
 
     registerSquareClickEvents(gameArray);
@@ -266,6 +268,32 @@ function polarY(polarRadius, polarAngle) {
 }
 
 /// DRAWING SHAPES
+function drawGameBoardSquares() {
+    // Draw GameBoard Squares
+    // *** Without "fill:transparent", mouse click event handlers cannot be hooked to the squares. ***
+    var pathGameBoardSquare = {};
+
+    pathGameBoardSquare["square_0_0"] = "m 0 0 l 100 0 0 100 -100 0 z";
+    pathGameBoardSquare["square_0_1"] = "m 100 0 l 100 0 0 100 -100 0 z";
+    pathGameBoardSquare["square_0_2"] = "m 200 0 l 100 0 0 100 -100 0 z";
+
+    pathGameBoardSquare["square_1_0"] = "m 0 100 l 100 0 0 100 -100 0 z";
+    pathGameBoardSquare["square_1_1"] = "m 100 100 l 100 0 0 100 -100 0 z";
+    pathGameBoardSquare["square_1_2"] = "m 200 100 l 100 0 0 100 -100 0 z";
+
+    pathGameBoardSquare["square_2_0"] = "m 0 200 l 100 0 0 100 -100 0 z";
+    pathGameBoardSquare["square_2_1"] = "m 100 200 l 100 0 0 100 -100 0 z";
+    pathGameBoardSquare["square_2_2"] = "m 200 200 l 100 0 0 100 -100 0 z";
+
+    $.each(pathGameBoardSquare, function (name, path) {
+        var objSquare = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        objSquare.setAttribute("style", "stroke-width:5;stroke:black;fill:transparent;");
+        objSquare.setAttribute("id", name);
+        objSquare.setAttribute("d", path);
+        $('#svgGameBoard').append(objSquare);
+    });
+}
+
 function drawCircle(refSquareName) {
     // Get values for the referenced square
     var row = getRowNumber(refSquareName);

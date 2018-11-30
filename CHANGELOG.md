@@ -3,11 +3,18 @@
 ## Changelog
 
 ### [TODO]
-- [ ] Generate GameBoard SVG code on server and push to client.
+- [ ] Refactor Registration of Square Click Events.
 - [ ] Reset button to clear the GameBoard.
 - [ ] Update "TicTacToe Sockets Mind Map" (xml, html) workflow diagram.
 - [ ] Update README and CHANGELOG files.
-- [X] Move checkVictory function to server.
+- [ ] Generate GameBoard SVG code on server and push to client.
+- [X] Refactor generation of GameBoard Squares from "index.html" to javascript code.
+<br/><br/>
+
+### v2.3.3
+#### Date: 2018-11-30
+#### Refactor GameBoard Squares from HTML to JavaScript.
+* Refactor generation of GameBoard Squares from "index.html" to javascript code.
 <br/><br/>
 
 ### v2.3.2
