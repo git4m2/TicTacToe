@@ -3,10 +3,21 @@
 ## Changelog
 
 ### [TODO]
-- [ ] Generate code for server-side multiplayer game.
+- [ ] Determine last gamepiece to move "circle" or "cross".
 - [ ] Create Event Log to maintain history of each move by each player.
 - [ ] Reset button to clear the GameBoard.
+- [ ] Update "TicTacToe Sockets Mind Map" (xml, html) workflow diagram.
 - [ ] Update README and CHANGELOG files.
+- [X] Generate code for server-side multiplayer game.
+<br/><br/>
+
+### v2.3.0
+#### Date: 2018-11-29
+#### Move game logic to server.
+* Added socket.on('squareSelected') function to client.
+* Added socket.on('clickSquare') function to server.
+* Modified 'clickSquare' function in client.
+* Added "TicTacToe Sockets Mind Map" (xml, html) workflow diagram.
 <br/><br/>
 
 ### v2.2.1

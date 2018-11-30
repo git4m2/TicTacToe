@@ -17,6 +17,7 @@ var maxPlayerCount = 2;
 var playerCount = 0;
 
 var players = {}; // JSON (i.e. key="circle"/"cross", value="John")
+var history = {}; // JSON (i.e. key="square_0_1", value="circle")
 
 app.use(express.static(__dirname + '/TicTacToe-Client'));
 
@@ -64,6 +65,17 @@ io.sockets.on('connection', function (socket) {
 
         //io.sockets.emit('updatechat', socket.username, data);
         io.sockets.emit('updatechat', socket.gamePiece, data);
+    });
+
+    socket.on('clickSquare', function (square) {
+        // Does an object ("circle" or "cross") already exist in the history array (i.e. duplicates)?
+        if (history[square] === undefined) {
+            // Determine last gamepiece to move "circle" or "cross"
+
+            history[square] = socket.gamePiece; // ex. history["square_0_1] = "cross"
+            io.sockets.emit('squareSelected', square, socket.gamePiece);
+            //io.sockets.emit('squareSelected', history);
+        }
     });
 
     socket.on('disconnect', function () {

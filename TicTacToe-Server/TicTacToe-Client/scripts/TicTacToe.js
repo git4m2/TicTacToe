@@ -2,7 +2,7 @@
 var gameArray = new Array(3);
 
 // Which gamePiece starts the game?
-var gamePiece = "circle";
+//var gamePiece = "circle";
 
 // Current User
 var currentUser = "";
@@ -17,6 +17,7 @@ function initialize() {
     socket.on('connect', addUser);
     socket.on('updateusers', updateUserList);
     socket.on('updatechat', processMessage);
+    socket.on('squareSelected', selectSquare);
 
     generateGameArray(gameArray);
 
@@ -58,6 +59,16 @@ function processMessage(username, data) {
 function sendMessage(squareName, playerMarker) {
     var message = squareName;
     socket.emit('sendchat', message, playerMarker);
+}
+
+function selectSquare(squareName, gamePiece) {
+    if (gamePiece === "circle") {
+        drawCircle(squareName);
+    } else if (gamePiece === "cross") {
+        drawCross(squareName);
+    } else {
+        // Error...
+    }
 }
 
 /// GAME ARRAY
@@ -105,43 +116,47 @@ function registerSquareClickEvents(squareArray) {
     }
 }
 
+//function clickSquare(object) {
+//    // Get values for the referenced square
+//    var row = getRowNumber(object.id);
+//    var column = getColumnNumber(object.id);
+
+//    // Does an object (circle or cross) already exist in the game array (i.e. duplicates)?
+//    if (gameArray[row][column] === undefined) {
+
+//        // Add object to Game array
+//        gameArray[row][column] = gamePiece; // "circle" or "cross"
+
+//        // Current gamePiece?
+//        if (gamePiece === "circle") {
+//            // Add object to GameBoard
+//            drawCircle(object.id);
+
+//            // Send Message
+//            sendMessage(object.id, gamePiece);
+
+//            // Switch gamePiece
+//            gamePiece = "cross";
+//        } else if (gamePiece === "cross") {
+//            // Add object to GameBoard
+//            drawCross(object.id);
+
+//            // Send Message
+//            sendMessage(object.id, gamePiece);
+
+//            // Switch gamePiece
+//            gamePiece = "circle";
+//        } else {
+//            // Error...
+//        }
+
+//        // Victory?
+//        checkVictory(gameArray);
+//    }
+//}
+
 function clickSquare(object) {
-    // Get values for the referenced square
-    var row = getRowNumber(object.id);
-    var column = getColumnNumber(object.id);
-
-    // Does an object (circle or cross) already exist in the game array (i.e. duplicates)?
-    if (gameArray[row][column] === undefined) {
-
-        // Add object to Game array
-        gameArray[row][column] = gamePiece; // "circle" or "cross"
-
-        // Current gamePiece?
-        if (gamePiece === "circle") {
-            // Add object to GameBoard
-            drawCircle(object.id);
-
-            // Send Message
-            sendMessage(object.id, gamePiece);
-
-            // Switch gamePiece
-            gamePiece = "cross";
-        } else if (gamePiece === "cross") {
-            // Add object to GameBoard
-            drawCross(object.id);
-
-            // Send Message
-            sendMessage(object.id, gamePiece);
-
-            // Switch gamePiece
-            gamePiece = "circle";
-        } else {
-            // Error...
-        }
-
-        // Victory?
-        checkVictory(gameArray);
-    }
+    socket.emit('clickSquare', object.id);
 }
 
 function getRowNumber(refSquareName) {
