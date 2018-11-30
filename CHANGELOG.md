@@ -3,12 +3,18 @@
 ## Changelog
 
 ### [TODO]
-- [ ] Determine last gamepiece to move "circle" or "cross".
-- [ ] Create Event Log to maintain history of each move by each player.
 - [ ] Reset button to clear the GameBoard.
 - [ ] Update "TicTacToe Sockets Mind Map" (xml, html) workflow diagram.
 - [ ] Update README and CHANGELOG files.
-- [X] Generate code for server-side multiplayer game.
+- [X] Determine last gamepiece to move "circle" or "cross".
+- [X] Create Event Log to maintain history of each move by each player.
+<br/><br/>
+
+### v2.3.1
+#### Date: 2018-11-30
+#### Refactor clickSquare function on server.
+* Determine last gamepiece to move "circle" or "cross".
+* Create Event Log (history) to maintain history of each move by each player.
 <br/><br/>
 
 ### v2.3.0

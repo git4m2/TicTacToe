@@ -66,6 +66,8 @@ function selectSquare(squareName, gamePiece) {
         drawCircle(squareName);
     } else if (gamePiece === "cross") {
         drawCross(squareName);
+    } else if (gamePiece === "disallow") {
+        //drawDisallow(squareName);
     } else {
         // Error...
     }
@@ -360,6 +362,10 @@ function drawCross(refSquareName) {
 
     // Draw object on SVG GameBoard
     $('#svgGameBoard').append(objCross);
+}
+
+function drawDisallow(refSquareName) {
+
 }
 
 function drawVictoryStrikeThrough(orientation) {

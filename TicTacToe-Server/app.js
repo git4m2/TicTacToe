@@ -16,6 +16,9 @@ var io = require('socket.io').listen(server);
 var maxPlayerCount = 2;
 var playerCount = 0;
 
+var playerOne = "circle";
+var playerTwo = "cross";
+
 var players = {}; // JSON (i.e. key="circle"/"cross", value="John")
 var history = {}; // JSON (i.e. key="square_0_1", value="circle")
 
@@ -35,23 +38,18 @@ io.sockets.on('connection', function (socket) {
         if (playerCount < maxPlayerCount) {
             switch (playerCount) {
                 case 0:
-                    //players[username] = "circle";
-                    //players["circle"] = username;
-                    socket.gamePiece = "circle";
+                    socket.gamePiece = playerOne;
                     players[socket.gamePiece] = username;
                     break;
 
                 case 1:
-                    //players[username] = "cross";
-                    //players["cross"] = username;
-                    socket.gamePiece = "cross";
+                    socket.gamePiece = playerTwo;
                     players[socket.gamePiece] = username;
                     break;
 
                 default:
             }
 
-            //socket.username = username;
             socket.emit('updatechat', 'SERVER', 'You (' + username + ') have connected');
             socket.broadcast.emit('updatechat', 'SERVER', username + ' has connected');
             io.sockets.emit('updateusers', players);
@@ -59,32 +57,65 @@ io.sockets.on('connection', function (socket) {
     });
 
     socket.on('sendchat', function (data, marker) {
-        //console.log('user: ' + socket.username + ', ' + 'data: ' + data + ', ' + 'marker: ' + marker);
         console.log('user: ' + socket.gamePiece + ', ' + 'data: ' + data + ', ' + 'marker: ' + marker);
-        // ex. user: John, data: square_0_0, marker: circle
+        // ex. user: circle, data: square_0_0, marker: circle
 
-        //io.sockets.emit('updatechat', socket.username, data);
         io.sockets.emit('updatechat', socket.gamePiece, data);
     });
 
     socket.on('clickSquare', function (square) {
-        // Does an object ("circle" or "cross") already exist in the history array (i.e. duplicates)?
-        if (history[square] === undefined) {
-            // Determine last gamepiece to move "circle" or "cross"
+        var historyCount = Object.keys(history).length;
+        var currentPlayer = socket.gamePiece; // "circle" or "cross"
 
-            history[square] = socket.gamePiece; // ex. history["square_0_1] = "cross"
-            io.sockets.emit('squareSelected', square, socket.gamePiece);
-            //io.sockets.emit('squareSelected', history);
+        // Are there any game pieces on the board?
+        if (historyCount > 0) {
+            var lastSquareSelected = Object.keys(history)[historyCount - 1];
+            var lastPlayer = history[lastSquareSelected];
+
+            // Does an object ("circle" or "cross") already exist in the history array (i.e. duplicates)?
+            if (history[square] === undefined) {
+                // Determine last gamepiece to move
+                if (lastPlayer === playerOne) {
+                    if (currentPlayer === playerOne) {
+                        // Message: "Current move should be Player 2 (" + playerTwo + ")."
+                        socket.emit('squareSelected', square, "disallow");
+                    } else if (currentPlayer === playerTwo) {
+                        io.sockets.emit('squareSelected', square, currentPlayer);
+                        history[square] = currentPlayer; // ex. history["square_0_2"] = "cross"
+                    } else {
+                        // Error...
+                    }
+                } else if (lastPlayer === playerTwo) {
+                    if (currentPlayer === playerOne) {
+                        io.sockets.emit('squareSelected', square, currentPlayer);
+                        history[square] = currentPlayer; // ex. history["square_0_1"] = "circle"
+                    } else if (currentPlayer === playerTwo) {
+                        // Message: "Current move should be Player 1 (" + playerOne + ")."
+                        socket.emit('squareSelected', square, "disallow");
+                    } else {
+                        // Error...
+                    }
+                } else {
+                    // Error...
+                }
+            } else {
+                // Message: 'This square has previously been selected.'
+                socket.emit('squareSelected', square, "disallow");
+            }
+        } else {
+            if (currentPlayer === playerOne) {
+                io.sockets.emit('squareSelected', square, currentPlayer);
+                history[square] = currentPlayer; // ex. history["square_0_1"] = "circle"
+            } else if (currentPlayer === playerTwo) {
+                // Message: "Player 1 (" + playerOne + ") goes first!"
+                socket.emit('squareSelected', square, "disallow");
+            } else {
+                // Error...
+            }
         }
     });
 
     socket.on('disconnect', function () {
-        //if (players[socket.username] !== undefined) {
-        //    delete players[socket.username];
-        //    io.sockets.emit('updateusers', players);
-        //    socket.broadcast.emit('updatechat', 'SERVER', socket.username + ' has disconnected');
-        //}
-
         if (players[socket.gamePiece] !== undefined) {
             var disconnectedUser = players[socket.gamePiece];
             delete players[socket.gamePiece];
