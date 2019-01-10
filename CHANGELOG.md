@@ -3,13 +3,20 @@
 ## Changelog
 
 ### [TODO]
-- [ ] Refactor Draw SVG Circle.
-- [ ] Reset button to clear the GameBoard.
-- [ ] Generate GameBoard SVG code on server and push to client.
 - [ ] Update "TicTacToe Sockets Mind Map" (xml, html) workflow diagram.
 - [ ] Update README and CHANGELOG files.
-- [X] Refactor Registration of Square Click Events.
-- [X] Refactor Draw SVG Square.
+- [ ] ~~Generate GameBoard SVG code on server and push to client.~~
+- [X] Refactor Draw SVG Circle.
+- [X] Reset button to clear the GameBoard.
+<br/><br/>
+
+### v3.0.0
+#### Date: 2019-01-09
+#### Refactor using OOP principles.
+* Refactor server-side *checkVictory* function to utilize new *drawSvgRadialLine* function on client-side.
+* Refactor Draw SVG GameBoard, Circle, Square, Cross and RadialLine using OOP principles.
+* Reset button to clear the GameBoard after a win.
+* Group functionality into various files (similar to MVC).
 <br/><br/>
 
 ### v2.3.4

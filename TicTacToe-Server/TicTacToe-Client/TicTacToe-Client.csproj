@@ -67,8 +67,11 @@
   <ItemGroup>
     <Content Include="images\GameBoard.svg" />
     <Content Include="images\GameBoard2.svg" />
+    <Content Include="libman.json" />
     <None Include="scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="index.html" />
+    <Content Include="scripts\Draw.js" />
+    <Content Include="scripts\HelperFunctions.js" />
     <Content Include="scripts\jquery-3.3.1.js" />
     <Content Include="scripts\jquery-3.3.1.min.js" />
     <Content Include="scripts\jquery-3.3.1.slim.js" />

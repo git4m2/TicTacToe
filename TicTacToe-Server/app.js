@@ -1,3 +1,5 @@
+
+// #region GLOBAL VARIABLES
 'use strict';
 var http = require('http');
 var port = process.env.PORT || 1337;
@@ -22,8 +24,11 @@ var playerTwo = "cross";
 var victory = false;
 
 var players = {}; // JSON (i.e. key="circle" or "cross", value="John")
-var history = {}; // JSON (i.e. key="square_0_1", value="circle")
+var history = {}; // JSON (i.e. key="tile_0_1", value="circle")
+// #endregion
 
+
+// #region APP SETUP
 app.use(express.static(__dirname + '/TicTacToe-Client'));
 
 app.get('/', function (req, res) {
@@ -32,6 +37,13 @@ app.get('/', function (req, res) {
 
     res.sendfile(__dirname + '/TicTacToe-Client/index.html');
 });
+// #endregion
+
+
+// #region SOCKETS
+///////////////////////////////////////////////////////////////////////////////
+///                                 SOCKETS                                 ///
+///////////////////////////////////////////////////////////////////////////////
 
 io.sockets.on('connection', function (socket) {
     socket.on('adduser', function (username) {
@@ -58,46 +70,57 @@ io.sockets.on('connection', function (socket) {
         }
     });
 
+    socket.on('cleargame', function () {
+        for (let elem in history) {
+            delete history[elem];
+        }
+
+        victory = false;
+
+        io.sockets.emit('cleargameboard');
+    });
+
     socket.on('sendchat', function (data, marker) {
         console.log('user: ' + socket.gamePiece + ', ' + 'data: ' + data + ', ' + 'marker: ' + marker);
-        // ex. user: circle, data: square_0_0, marker: circle
+        // ex. user: circle, data: tile_0_0, marker: circle
 
         io.sockets.emit('updatechat', socket.gamePiece, data);
     });
 
-    socket.on('clickSquare', function (square) {
+    socket.on('clickTile', function (tile) {
         var historyCount = Object.keys(history).length;
+        var lastTileSelected = Object.keys(history)[historyCount - 1];
+        var lastPlayer = history[lastTileSelected];
         var currentPlayer = socket.gamePiece; // "circle" or "cross"
 
         // Did anyone win?
         if (victory === false) {
             // Are there any game pieces on the board?
             if (historyCount > 0) {
-                var lastSquareSelected = Object.keys(history)[historyCount - 1];
-                var lastPlayer = history[lastSquareSelected];
-
                 // Does an object ("circle" or "cross") already exist in the history array (i.e. duplicates)?
-                if (history[square] === undefined) {
+                if (history[tile] === undefined) {
                     // Determine last gamepiece to move
                     if (lastPlayer === playerOne) {
                         if (currentPlayer === playerOne) {
                             // Message: "Current move should be Player 2 (" + playerTwo + ")."
-                            socket.emit('squareSelected', square, "disallow");
+                            socket.emit('tileSelected', tile, "disallow");
                         } else if (currentPlayer === playerTwo) {
-                            io.sockets.emit('squareSelected', square, currentPlayer);
-                            history[square] = currentPlayer; // ex. history["square_0_2"] = "cross"
-                            checkVictory(history);
+                            io.sockets.emit('crossSelected', tile);
+                            history[tile] = currentPlayer; // ex. history["tile_0_2"] = "cross"
+                            //checkVictory(history);
+                            checkVictory();
                         } else {
                             // Error...
                         }
                     } else if (lastPlayer === playerTwo) {
                         if (currentPlayer === playerOne) {
-                            io.sockets.emit('squareSelected', square, currentPlayer);
-                            history[square] = currentPlayer; // ex. history["square_0_1"] = "circle"
-                            checkVictory(history);
+                            io.sockets.emit('circleSelected', tile);
+                            history[tile] = currentPlayer; // ex. history["tile_0_1"] = "circle"
+                            //checkVictory(history);
+                            checkVictory();
                         } else if (currentPlayer === playerTwo) {
                             // Message: "Current move should be Player 1 (" + playerOne + ")."
-                            socket.emit('squareSelected', square, "disallow");
+                            socket.emit('tileSelected', tile, "disallow");
                         } else {
                             // Error...
                         }
@@ -105,16 +128,17 @@ io.sockets.on('connection', function (socket) {
                         // Error...
                     }
                 } else {
-                    // Message: 'This square has previously been selected.'
-                    socket.emit('squareSelected', square, "disallow");
+                    // Message: 'This tile has previously been selected.'
+                    socket.emit('tileSelected', tile, "disallow");
                 }
             } else {
+                // First move of the game...
                 if (currentPlayer === playerOne) {
-                    io.sockets.emit('squareSelected', square, currentPlayer);
-                    history[square] = currentPlayer; // ex. history["square_0_1"] = "circle"
+                    io.sockets.emit('circleSelected', tile);
+                    history[tile] = currentPlayer; // ex. history["tile_0_1"] = "circle"
                 } else if (currentPlayer === playerTwo) {
                     // Message: "Player 1 (" + playerOne + ") goes first!"
-                    socket.emit('squareSelected', square, "disallow");
+                    socket.emit('tileSelected', tile, "disallow");
                 } else {
                     // Error...
                 }
@@ -134,65 +158,119 @@ io.sockets.on('connection', function (socket) {
 
 server.listen(port);
 console.log('Listening on port: ' + port);
+// #endregion
 
-function checkVictory(historyArray) {
+
+// #region CHECK VICTORY
+///////////////////////////////////////////////////////////////////////////////
+///                              CHECK VICTORY                              ///
+///////////////////////////////////////////////////////////////////////////////
+
+function checkVictory() {
+    var historyCount = Object.keys(history).length;
+    var lastTileSelected = Object.keys(history)[historyCount - 1];
+    var lastPlayer = history[lastTileSelected];
     var lineData = "";
+    var objVictoryLine = "";
+    var endGameData = "";
 
     // Check for victory (3 objects in a line)
 
     // Row 1
-    lineData = historyArray["square_0_0"] + "," + historyArray["square_0_1"] + "," + historyArray["square_0_2"];
+    lineData = history["tile_0_0"] + "," + history["tile_0_1"] + "," + history["tile_0_2"];
     if (lineData === "circle,circle,circle" || lineData === "cross,cross,cross") {
-        io.sockets.emit('victory', "row1");
+        //io.sockets.emit('victory', "row1");
+        //objVictoryLine = { "name": "victoryStrikeThrough", "targetBoard": "svgGameBoard", "startRectangle": "tile_0_1", "endRectangle": "tile_0_2", "startAngle": 0, "offsetAngle": -5, "strokeWidth": 15, "stroke": "black", "strokeLinecap": "round", "fill": "none", "opacity": 1.0 };
+        //io.sockets.emit('victory', objVictoryLine);
+        io.sockets.emit('victory', "tile_0_1", "tile_0_2");
+        endGameData = { "winner": lastPlayer };
+        io.sockets.emit('endgame', endGameData);
         victory = true;
     }
 
     // Row 2
-    lineData = historyArray["square_1_0"] + "," + historyArray["square_1_1"] + "," + historyArray["square_1_2"];
+    lineData = history["tile_1_0"] + "," + history["tile_1_1"] + "," + history["tile_1_2"];
     if (lineData === "circle,circle,circle" || lineData === "cross,cross,cross") {
-        io.sockets.emit('victory', "row2");
+        //io.sockets.emit('victory', "row2");
+        //objVictoryLine = { "name": "victoryStrikeThrough", "targetBoard": "svgGameBoard", "startRectangle": "tile_1_1", "endRectangle": "tile_1_2", "startAngle": 0, "offsetAngle": -5, "strokeWidth": 15, "stroke": "black", "strokeLinecap": "round", "fill": "none", "opacity": 1.0 };
+        //io.sockets.emit('victory', objVictoryLine);
+        io.sockets.emit('victory', "tile_1_1", "tile_1_2");
+        endGameData = { "winner": lastPlayer };
+        io.sockets.emit('endgame', endGameData);
         victory = true;
     }
 
     // Row 3
-    lineData = historyArray["square_2_0"] + "," + historyArray["square_2_1"] + "," + historyArray["square_2_2"];
+    lineData = history["tile_2_0"] + "," + history["tile_2_1"] + "," + history["tile_2_2"];
     if (lineData === "circle,circle,circle" || lineData === "cross,cross,cross") {
-        io.sockets.emit('victory', "row3");
+        //io.sockets.emit('victory', "row3");
+        //objVictoryLine = { "name": "victoryStrikeThrough", "targetBoard": "svgGameBoard", "startRectangle": "tile_2_1", "endRectangle": "tile_2_2", "startAngle": 0, "offsetAngle": -5, "strokeWidth": 15, "stroke": "black", "strokeLinecap": "round", "fill": "none", "opacity": 1.0 };
+        //io.sockets.emit('victory', objVictoryLine);
+        io.sockets.emit('victory', "tile_2_1", "tile_2_2");
+        endGameData = { "winner": lastPlayer };
+        io.sockets.emit('endgame', endGameData);
         victory = true;
     }
 
     // Column 1
-    lineData = historyArray["square_0_0"] + "," + historyArray["square_1_0"] + "," + historyArray["square_2_0"];
+    lineData = history["tile_0_0"] + "," + history["tile_1_0"] + "," + history["tile_2_0"];
     if (lineData === "circle,circle,circle" || lineData === "cross,cross,cross") {
-        io.sockets.emit('victory', "column1");
+        //io.sockets.emit('victory', "column1");
+        //objVictoryLine = { "name": "victoryStrikeThrough", "targetBoard": "svgGameBoard", "startRectangle": "tile_1_0", "endRectangle": "tile_2_0", "startAngle": 90, "offsetAngle": -5, "strokeWidth": 15, "stroke": "black", "strokeLinecap": "round", "fill": "none", "opacity": 1.0 };
+        //io.sockets.emit('victory', objVictoryLine);
+        io.sockets.emit('victory', "tile_1_0", "tile_2_0");
+        endGameData = { "winner": lastPlayer };
+        io.sockets.emit('endgame', endGameData);
         victory = true;
     }
 
     // Column 2
-    lineData = historyArray["square_0_1"] + "," + historyArray["square_1_1"] + "," + historyArray["square_2_1"];
+    lineData = history["tile_0_1"] + "," + history["tile_1_1"] + "," + history["tile_2_1"];
     if (lineData === "circle,circle,circle" || lineData === "cross,cross,cross") {
-        io.sockets.emit('victory', "column2");
+        //io.sockets.emit('victory', "column2");
+        //objVictoryLine = { "name": "victoryStrikeThrough", "targetBoard": "svgGameBoard", "startRectangle": "tile_1_1", "endRectangle": "tile_2_1", "startAngle": 90, "offsetAngle": -5, "strokeWidth": 15, "stroke": "black", "strokeLinecap": "round", "fill": "none", "opacity": 1.0 };
+        //io.sockets.emit('victory', objVictoryLine);
+        io.sockets.emit('victory', "tile_1_1", "tile_2_1");
+        endGameData = { "winner": lastPlayer };
+        io.sockets.emit('endgame', endGameData);
         victory = true;
     }
 
     // Column 3
-    lineData = historyArray["square_0_2"] + "," + historyArray["square_1_2"] + "," + historyArray["square_2_2"];
+    lineData = history["tile_0_2"] + "," + history["tile_1_2"] + "," + history["tile_2_2"];
     if (lineData === "circle,circle,circle" || lineData === "cross,cross,cross") {
-        io.sockets.emit('victory', "column3");
+        //io.sockets.emit('victory', "column3");
+        //objVictoryLine = { "name": "victoryStrikeThrough", "targetBoard": "svgGameBoard", "startRectangle": "tile_1_2", "endRectangle": "tile_2_2", "startAngle": 90, "offsetAngle": -5, "strokeWidth": 15, "stroke": "black", "strokeLinecap": "round", "fill": "none", "opacity": 1.0 };
+        //io.sockets.emit('victory', objVictoryLine);
+        io.sockets.emit('victory', "tile_1_2", "tile_2_2");
+        endGameData = { "winner": lastPlayer };
+        io.sockets.emit('endgame', endGameData);
         victory = true;
     }
 
     // "Backslash" Diagonal ("\")
-    lineData = historyArray["square_0_0"] + "," + historyArray["square_1_1"] + "," + historyArray["square_2_2"];
+    lineData = history["tile_0_0"] + "," + history["tile_1_1"] + "," + history["tile_2_2"];
     if (lineData === "circle,circle,circle" || lineData === "cross,cross,cross") {
-        io.sockets.emit('victory', "backSlash");
+        //io.sockets.emit('victory', "backSlash");
+        //objVictoryLine = { "name": "victoryStrikeThrough", "targetBoard": "svgGameBoard", "startRectangle": "tile_1_1", "endRectangle": "tile_2_2", "startAngle": 45, "offsetAngle": -5, "strokeWidth": 15, "stroke": "black", "strokeLinecap": "round", "fill": "none", "opacity": 1.0 };
+        //io.sockets.emit('victory', objVictoryLine);
+        io.sockets.emit('victory', "tile_1_1", "tile_2_2");
+        endGameData = { "winner": lastPlayer };
+        io.sockets.emit('endgame', endGameData);
         victory = true;
     }
 
     // "Forward Slash" Diagonal ("/")
-    lineData = historyArray["square_0_2"] + "," + historyArray["square_1_1"] + "," + historyArray["square_2_0"];
+    lineData = history["tile_0_2"] + "," + history["tile_1_1"] + "," + history["tile_2_0"];
     if (lineData === "circle,circle,circle" || lineData === "cross,cross,cross") {
-        io.sockets.emit('victory', "forwardSlash");
+        //io.sockets.emit('victory', "forwardSlash");
+        //objVictoryLine = { "name": "victoryStrikeThrough", "targetBoard": "svgGameBoard", "startRectangle": "tile_1_1", "endRectangle": "tile_2_0", "startAngle": 135, "offsetAngle": -5, "strokeWidth": 15, "stroke": "black", "strokeLinecap": "round", "fill": "none", "opacity": 1.0 };
+        //io.sockets.emit('victory', objVictoryLine);
+        io.sockets.emit('victory', "tile_1_1", "tile_2_0");
+        endGameData = { "winner": lastPlayer };
+        io.sockets.emit('endgame', endGameData);
         victory = true;
     }
 }
+// #endregion
+
