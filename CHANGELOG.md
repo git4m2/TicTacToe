@@ -1,11 +1,79 @@
 # TicTacToe
 
-## Changelog
+## CHANGELOG
 
 ### [TODO]
-- [ ] Create Event Log to maintain history of each move by each player.
-- [ ] Reset button to clear the GameBoard.
+- [ ] Update "TicTacToe Sockets Mind Map" (xml, html) workflow diagram.
 - [ ] Update README and CHANGELOG files.
+<br/><br/>
+
+### v3.0.0
+#### Date: 2019-01-09
+#### Refactor using OOP principles.
+* Refactor server-side *checkVictory* function to utilize new *drawSvgRadialLine* function on client-side.
+* Refactor Draw SVG GameBoard, Circle, Square, Cross and RadialLine using OOP principles.
+* Reset button to clear the GameBoard after a win.
+* Group functionality into various files (similar to MVC).
+<br/><br/>
+
+### v2.3.4
+#### Date: 2018-12-05
+#### Refactor Registration of Square Click Events.
+* Refactor Registration of Square Click Events to send message to server logic and then back to client.
+* Refactor Draw SVG Square.
+<br/><br/>
+
+### v2.3.3
+#### Date: 2018-11-30
+#### Refactor GameBoard Squares from HTML to JavaScript.
+* Refactor generation of GameBoard Squares from "index.html" to javascript code.
+<br/><br/>
+
+### v2.3.2
+#### Date: 2018-11-30
+#### Move checkVictory function to server.
+* Utilize history (on server) versus gameArray (on client) for checkVictory function (on server).
+<br/><br/>
+
+### v2.3.1
+#### Date: 2018-11-30
+#### Refactor clickSquare function on server.
+* Determine last gamepiece to move "circle" or "cross".
+* Create Event Log (history) to maintain history of each move by each player.
+<br/><br/>
+
+### v2.3.0
+#### Date: 2018-11-29
+#### Move game logic to server.
+* Added socket.on('squareSelected') function to client.
+* Added socket.on('clickSquare') function to server.
+* Modified 'clickSquare' function in client.
+* Added "TicTacToe Sockets Mind Map" (xml, html) workflow diagram.
+<br/><br/>
+
+### v2.2.1
+#### Date: 2018-11-29
+#### Refactor code to swap username with gamepiece.
+* Swapped username (ex. "Andy", "Bob") with gamepiece ("circle" or "cross") to facilitate easier array referencing.
+* Added "TicTacToe Sockets Mind Map.xml" workflow diagram.
+<br/><br/>
+
+### v2.2.0
+#### Date: 2018-11-02
+#### First iteration of multiplayer code.
+* First iteration of functional multiplayer code, albeit with multiple issues.
+<br/><br/>
+
+### v2.1.0
+#### Date: 2018-11-02
+#### Embed TicTacToe-Client project files within TicTacToe-Server project.
+* Embed TicTacToe-Client project files within TicTacToe-Server project for file availability.
+<br/><br/>
+
+### v2.0.0
+#### Date: 2018-11-02
+#### Create Server for Multiplayer framework.
+* Added TicTacToe-Server project to solution.
 <br/><br/>
 
 ### v1.10.0
