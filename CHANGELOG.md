@@ -1,13 +1,10 @@
 # TicTacToe
 
-## Changelog
+## CHANGELOG
 
 ### [TODO]
 - [ ] Update "TicTacToe Sockets Mind Map" (xml, html) workflow diagram.
 - [ ] Update README and CHANGELOG files.
-- [ ] ~~Generate GameBoard SVG code on server and push to client.~~
-- [X] Refactor Draw SVG Circle.
-- [X] Reset button to clear the GameBoard.
 <br/><br/>
 
 ### v3.0.0
