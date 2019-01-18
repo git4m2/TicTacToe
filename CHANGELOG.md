@@ -7,6 +7,12 @@
 - [ ] Update README and CHANGELOG files.
 <br/><br/>
 
+### v5.0.1
+#### Date: 2019-01-18
+#### File package.json moved to root directory.
+* File *package.json* moved to root directory for recognition by heroku services.
+<br/><br/>
+
 ### v5.0.0
 #### Date: 2019-01-18
 #### Prep for Heroku deployment.
