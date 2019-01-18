@@ -7,6 +7,25 @@
 - [ ] Update README and CHANGELOG files.
 <br/><br/>
 
+### v5.0.0
+#### Date: 2019-01-18
+#### Prep for Heroku deployment.
+* Added *Procfile* for local testing.
+* Added explicit versions to engines section within *package.json* file.
+* Renamed *app.js* to *server.js* for better compliance with nodejs.
+* Modified port setting within *server.js* file.
+<br/><br/>
+
+### v4.0.0
+#### Date: 2019-01-10
+#### Merge Multiplayer branch with master branch.
+<br/><br/>
+
+### v3.0.1
+#### Date: 2019-01-10
+#### CHANGELOG modified.
+<br/><br/>
+
 ### v3.0.0
 #### Date: 2019-01-09
 #### Refactor using OOP principles.

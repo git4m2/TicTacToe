@@ -10,13 +10,21 @@ var radiusMultiplier = 0.4;
 // #endregion
 
 
+// #region DOCUMENT READY
+$(document).ready(function () {
+    initialize();
+});
+// #endregion
+
+
 // #region INITIALIZATION
 ///////////////////////////////////////////////////////////////////////////////
 ///                             INITIALIZATION                              ///
 ///////////////////////////////////////////////////////////////////////////////
 
 function initialize() {
-    socket = io.connect('http://localhost:1337');
+    //socket = io.connect('http://localhost:1337');
+    socket = io.connect();
     socket.on('connect', addUser);
     socket.on('updateusers', updateUserList);
     socket.on('updatechat', processMessage);
@@ -59,13 +67,6 @@ function initialize() {
         disableNewGameButton(false);
     });
 }
-// #endregion
-
-
-// #region DOCUMENT READY
-$(document).ready(function () {
-    initialize();
-});
 // #endregion
 
 
